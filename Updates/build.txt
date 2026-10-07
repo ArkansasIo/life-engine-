@@ -1,0 +1,27 @@
+rmjob systems and r# LifeEngine build stamp
+#
+# The identity of the build in this working tree. Read by the version system,
+# shown in the About box and written into the settings file, so a bug report
+# always says which build it came from.
+#
+# Build names are  yyyy.MM.dd  with an  -rN  revision when there is more than
+# one build in a day. Keep the revision when you bump the date; reset it to 1.
+
+product      = LifeEngine
+description  = Game of Life cellular automata simulator with a biological and ecological model
+company      = ArkansasIo
+developer    = ArkansasIo
+
+version      = 1.1.0.0
+build        = 2026.10.07-r3
+buildDate    = 2026-10-07
+revision     = 3
+
+channel      = stable
+manifest     = Updates\updates.xml
+
+# The oldest version this build's packages may be applied to.
+minimumVersion = 1.0.0.0
+
+# Set to true for a build that should not be offered on the stable channel.
+prerelease   = false

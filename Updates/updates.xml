@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  LifeEngine update manifest.
+
+  The program reads this file to learn what builds exist. It never installs
+  anything by itself: the updater verifies the package against the SHA-256 here
+  and then applies it under the rules in the patch system.
+
+  Channels
+    stable    full releases only, the ones an ordinary user should get
+    beta      everything, including builds still being tested
+
+  Release kind
+    full      replaces the install; everything before it becomes unnecessary
+    patch     a change on top of an existing build
+    breaking  a change that alters or removes existing behaviour
+
+  Build names are "yyyy.MM.dd" with an "-rN" revision when there is more than
+  one build in a day, e.g. 2026.10.07-r3.
+-->
+<lifeengine version="1" product="LifeEngine" developer="ArkansasIo">
+
+  <channels>
+    <channel name="stable" url="https://example.invalid/lifeengine/stable.xml" allowPrerelease="false" />
+    <channel name="beta" url="https://example.invalid/lifeengine/beta.xml" allowPrerelease="true" />
+  </channels>
+
+  <releases>
+
+    <release build="2026.10.07-r3" version="1.1.0.0" name="Rivers and Rain" kind="patch" releasedOn="2026-10-07">
+      <developer>ArkansasIo</developer>
+      <minimumVersion>1.0.0.0</minimumVersion>
+      <path>updates/LifeEngine-1.1.0.0-patch.zip</path>
+      <url>https://example.invalid/lifeengine/2026.10.07-r3/LifeEngine-patch.zip</url>
+      <sha256>0000000000000000000000000000000000000000000000000000000000000000</sha256>
+      <size>1482752</size>
+      <notes>Adds the world map, the ecosystems that live on it and the animal catalogue covering every phylum, class and order.</notes>
+      <changes>
+        <change>World map generation: latitude bands, elevation, rivers and coastlines</change>
+        <change>Biome classification from temperature and rainfall</change>
+        <change>Ecosystem simulation with producers, herbivores and predators</change>
+        <change>Animal catalogue: every phylum, class and order with common names</change>
+        <change>Settings file, version info and update manifest</change>
+      </changes>
+    </release>
+
+    <release build="2026.09.21-r1" version="1.0.1.0" name="Interface Rebuild" kind="patch" releasedOn="2026-09-21">
+      <developer>ArkansasIo</developer>
+      <minimumVersion>1.0.0.0</minimumVersion>
+      <path>updates/LifeEngine-1.0.1.0-patch.zip</path>
+      <sha256>0000000000000000000000000000000000000000000000000000000000000000</sha256>
+      <size>524288</size>
+      <notes>Rebuilds the interface around a ribbon menu, a left sidebar and a status bar.</notes>
+      <changes>
+        <change>Top ribbon menu with File, Simulation, View, Options and Help</change>
+        <change>Left control sidebar with the simulation, rules and appearance groups</change>
+        <change>Bottom status bar with generation, population, size, speed and zoom</change>
+        <change>Keyboard shortcuts and mouse gestures on the grid</change>
+      </changes>
+    </release>
+
+    <release build="2026.09.01-r1" version="1.0.0.0" name="Project Restart" kind="full" releasedOn="2026-09-01">
+      <developer>ArkansasIo</developer>
+      <path>updates/LifeEngine-1.0.0.0-full.zip</path>
+      <sha256>0000000000000000000000000000000000000000000000000000000000000000</sha256>
+      <size>8388608</size>
+      <notes>First ArkansasIo build: the Conway engine with the biological model underneath it.</notes>
+      <changes>
+        <change>Twenty-four rulesets, from Conway's Life to Walled Cities</change>
+        <change>Grid from 25 to 250 cells a side with zoom and history</change>
+        <change>Biological model: taxonomy, organisms, genomes, biomes</change>
+      </changes>
+    </release>
+
+  </releases>
+</lifeengine>

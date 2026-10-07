@@ -1,4 +1,4 @@
-﻿namespace LifeEngine
+﻿﻿namespace LifeEngine
 {
     partial class FormLife
     {
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLife));
             this.m_buttonStart = new System.Windows.Forms.Button();
             this.m_buttonStop = new System.Windows.Forms.Button();
             this.m_buttonRandomize = new System.Windows.Forms.Button();
@@ -45,6 +44,10 @@
             this.m_labelStepNumber = new System.Windows.Forms.Label();
             this.m_labelPopulation = new System.Windows.Forms.Label();
             this.m_menuStrip = new System.Windows.Forms.MenuStrip();
+            this.m_menuWorld = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_menuWorldNew = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_menuWorldEmpty = new System.Windows.Forms.ToolStripMenuItem();
+            this.m_menuWorldRun = new System.Windows.Forms.ToolStripMenuItem();
             this.m_menuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.m_menuGrid = new System.Windows.Forms.ToolStripMenuItem();
             this.m_menuLiveColor = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,9 +63,9 @@
             this.m_panelScroller.SuspendLayout();
             this.m_menuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // m_buttonStart
-            // 
+            //
             this.m_buttonStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonStart.Location = new System.Drawing.Point(2, 630);
             this.m_buttonStart.Name = "m_buttonStart";
@@ -70,9 +73,9 @@
             this.m_buttonStart.TabIndex = 0;
             this.m_buttonStart.Text = "&Start";
             this.m_buttonStart.UseVisualStyleBackColor = true;
-            // 
+            //
             // m_buttonStop
-            // 
+            //
             this.m_buttonStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonStop.Location = new System.Drawing.Point(83, 630);
             this.m_buttonStop.Name = "m_buttonStop";
@@ -80,9 +83,9 @@
             this.m_buttonStop.TabIndex = 1;
             this.m_buttonStop.Text = "S&top";
             this.m_buttonStop.UseVisualStyleBackColor = true;
-            // 
+            //
             // m_buttonRandomize
-            // 
+            //
             this.m_buttonRandomize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonRandomize.Location = new System.Drawing.Point(164, 659);
             this.m_buttonRandomize.Name = "m_buttonRandomize";
@@ -90,9 +93,9 @@
             this.m_buttonRandomize.TabIndex = 6;
             this.m_buttonRandomize.Text = "R&andomize";
             this.m_buttonRandomize.UseVisualStyleBackColor = true;
-            // 
+            //
             // m_buttonClear
-            // 
+            //
             this.m_buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonClear.Location = new System.Drawing.Point(83, 659);
             this.m_buttonClear.Name = "m_buttonClear";
@@ -100,9 +103,9 @@
             this.m_buttonClear.TabIndex = 5;
             this.m_buttonClear.Text = "&Clear";
             this.m_buttonClear.UseVisualStyleBackColor = true;
-            // 
+            //
             // m_buttonReset
-            // 
+            //
             this.m_buttonReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonReset.Location = new System.Drawing.Point(2, 659);
             this.m_buttonReset.Name = "m_buttonReset";
@@ -110,9 +113,9 @@
             this.m_buttonReset.TabIndex = 4;
             this.m_buttonReset.Text = "&Reset";
             this.m_buttonReset.UseVisualStyleBackColor = true;
-            // 
+            //
             // m_rulesCombobox
-            // 
+            //
             this.m_rulesCombobox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_rulesCombobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.m_rulesCombobox.DropDownWidth = 200;
@@ -123,9 +126,9 @@
             this.m_rulesCombobox.Name = "m_rulesCombobox";
             this.m_rulesCombobox.Size = new System.Drawing.Size(200, 21);
             this.m_rulesCombobox.TabIndex = 3;
-            // 
+            //
             // m_buttonStep
-            // 
+            //
             this.m_buttonStep.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonStep.Location = new System.Drawing.Point(164, 630);
             this.m_buttonStep.Name = "m_buttonStep";
@@ -133,11 +136,11 @@
             this.m_buttonStep.TabIndex = 2;
             this.m_buttonStep.Text = "Ste&p";
             this.m_buttonStep.UseVisualStyleBackColor = true;
-            // 
+            //
             // m_panelScroller
-            // 
-            this.m_panelScroller.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.m_panelScroller.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.m_panelScroller.AutoScroll = true;
             this.m_panelScroller.CausesValidation = false;
@@ -146,9 +149,9 @@
             this.m_panelScroller.Name = "m_panelScroller";
             this.m_panelScroller.Size = new System.Drawing.Size(600, 600);
             this.m_panelScroller.TabIndex = 7;
-            // 
+            //
             // m_lifeGrid
-            // 
+            //
             this.m_lifeGrid.CellColorAlive = System.Drawing.Color.DeepSkyBlue;
             this.m_lifeGrid.CellColorDead = System.Drawing.Color.White;
             this.m_lifeGrid.CellColorHistory = System.Drawing.Color.LightGreen;
@@ -161,9 +164,9 @@
             this.m_lifeGrid.Size = new System.Drawing.Size(600, 600);
             this.m_lifeGrid.TabIndex = 15;
             this.m_lifeGrid.TabStop = false;
-            // 
+            //
             // m_buttonZoomOut
-            // 
+            //
             this.m_buttonZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonZoomOut.Location = new System.Drawing.Point(554, 659);
             this.m_buttonZoomOut.Name = "m_buttonZoomOut";
@@ -171,9 +174,9 @@
             this.m_buttonZoomOut.TabIndex = 8;
             this.m_buttonZoomOut.Text = "-";
             this.m_buttonZoomOut.UseVisualStyleBackColor = true;
-            // 
+            //
             // m_buttonZoomIn
-            // 
+            //
             this.m_buttonZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_buttonZoomIn.Location = new System.Drawing.Point(525, 659);
             this.m_buttonZoomIn.Name = "m_buttonZoomIn";
@@ -181,9 +184,9 @@
             this.m_buttonZoomIn.TabIndex = 9;
             this.m_buttonZoomIn.Text = "+";
             this.m_buttonZoomIn.UseVisualStyleBackColor = true;
-            // 
+            //
             // lblZoom
-            // 
+            //
             this.lblZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblZoom.AutoSize = true;
             this.lblZoom.Location = new System.Drawing.Point(525, 635);
@@ -192,9 +195,9 @@
             this.lblZoom.TabIndex = 10;
             this.lblZoom.Text = "Zoom In/Out:";
             this.lblZoom.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            // 
+            //
             // m_labelZoomCount
-            // 
+            //
             this.m_labelZoomCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_labelZoomCount.AutoSize = true;
             this.m_labelZoomCount.Location = new System.Drawing.Point(583, 664);
@@ -202,9 +205,9 @@
             this.m_labelZoomCount.Size = new System.Drawing.Size(13, 13);
             this.m_labelZoomCount.TabIndex = 11;
             this.m_labelZoomCount.Text = "1";
-            // 
+            //
             // m_labelStepNumber
-            // 
+            //
             this.m_labelStepNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_labelStepNumber.AutoSize = true;
             this.m_labelStepNumber.Location = new System.Drawing.Point(368, 635);
@@ -212,9 +215,9 @@
             this.m_labelStepNumber.Size = new System.Drawing.Size(71, 13);
             this.m_labelStepNumber.TabIndex = 12;
             this.m_labelStepNumber.Text = "Generation: 0";
-            // 
+            //
             // m_labelPopulation
-            // 
+            //
             this.m_labelPopulation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_labelPopulation.AutoSize = true;
             this.m_labelPopulation.Location = new System.Drawing.Point(368, 664);
@@ -222,10 +225,11 @@
             this.m_labelPopulation.Size = new System.Drawing.Size(69, 13);
             this.m_labelPopulation.TabIndex = 13;
             this.m_labelPopulation.Text = "Population: 0";
-            // 
+            //
             // m_menuStrip
-            // 
+            //
             this.m_menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.m_menuWorld,
             this.m_menuOptions,
             this.m_menuHelp});
             this.m_menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -233,9 +237,40 @@
             this.m_menuStrip.Size = new System.Drawing.Size(604, 24);
             this.m_menuStrip.TabIndex = 14;
             this.m_menuStrip.Text = "m_menuStrip";
-            // 
+            //
+            // m_menuWorld
+            //
+            this.m_menuWorld.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.m_menuWorldNew,
+            this.m_menuWorldEmpty,
+            this.m_menuWorldRun});
+            this.m_menuWorld.Name = "m_menuWorld";
+            this.m_menuWorld.Size = new System.Drawing.Size(51, 20);
+            this.m_menuWorld.Text = "&World";
+            //
+            // m_menuWorldNew
+            //
+            this.m_menuWorldNew.Name = "m_menuWorldNew";
+            this.m_menuWorldNew.Size = new System.Drawing.Size(200, 22);
+            this.m_menuWorldNew.Text = "&New World";
+            this.m_menuWorldNew.Click += new System.EventHandler(this.MenuWorldNewClick);
+            //
+            // m_menuWorldEmpty
+            //
+            this.m_menuWorldEmpty.Name = "m_menuWorldEmpty";
+            this.m_menuWorldEmpty.Size = new System.Drawing.Size(200, 22);
+            this.m_menuWorldEmpty.Text = "New World (no life)";
+            this.m_menuWorldEmpty.Click += new System.EventHandler(this.MenuWorldEmptyClick);
+            //
+            // m_menuWorldRun
+            //
+            this.m_menuWorldRun.Name = "m_menuWorldRun";
+            this.m_menuWorldRun.Size = new System.Drawing.Size(200, 22);
+            this.m_menuWorldRun.Text = "Run &100 ticks";
+            this.m_menuWorldRun.Click += new System.EventHandler(this.MenuWorldRunClick);
+            //
             // m_menuOptions
-            // 
+            //
             this.m_menuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.m_menuGrid,
             this.m_menuLiveColor,
@@ -244,9 +279,9 @@
             this.m_menuOptions.Name = "m_menuOptions";
             this.m_menuOptions.Size = new System.Drawing.Size(61, 20);
             this.m_menuOptions.Text = "&Options";
-            // 
+            //
             // m_menuGrid
-            // 
+            //
             this.m_menuGrid.Checked = true;
             this.m_menuGrid.CheckState = System.Windows.Forms.CheckState.Checked;
             this.m_menuGrid.Image = global::LifeEngine.Properties.Resources.IconGrid;
@@ -255,49 +290,49 @@
             this.m_menuGrid.Size = new System.Drawing.Size(170, 22);
             this.m_menuGrid.Text = "Show &Grid";
             this.m_menuGrid.Click += new System.EventHandler(this.MenuOptionsShowGridClick);
-            // 
+            //
             // m_menuLiveColor
-            // 
+            //
             this.m_menuLiveColor.Image = global::LifeEngine.Properties.Resources.IconColor;
             this.m_menuLiveColor.Name = "m_menuLiveColor";
             this.m_menuLiveColor.Size = new System.Drawing.Size(170, 22);
             this.m_menuLiveColor.Text = "&Live Cell Color";
             this.m_menuLiveColor.Click += new System.EventHandler(this.MenuOptionsLiveCellColorClick);
-            // 
+            //
             // m_menuDeadColor
-            // 
+            //
             this.m_menuDeadColor.Image = global::LifeEngine.Properties.Resources.IconColor;
             this.m_menuDeadColor.Name = "m_menuDeadColor";
             this.m_menuDeadColor.Size = new System.Drawing.Size(170, 22);
             this.m_menuDeadColor.Text = "&Dead Cell Color";
             this.m_menuDeadColor.Click += new System.EventHandler(this.MenuOptionsDeadCellColorClick);
-            // 
+            //
             // m_menuHistoryColor
-            // 
+            //
             this.m_menuHistoryColor.Image = global::LifeEngine.Properties.Resources.IconColor;
             this.m_menuHistoryColor.Name = "m_menuHistoryColor";
             this.m_menuHistoryColor.Size = new System.Drawing.Size(170, 22);
             this.m_menuHistoryColor.Text = "&History Cell Color";
             this.m_menuHistoryColor.Click += new System.EventHandler(this.MenuOptionsHistoryCellColorClick);
-            // 
+            //
             // m_menuHelp
-            // 
+            //
             this.m_menuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.m_menuAbout});
             this.m_menuHelp.Name = "m_menuHelp";
             this.m_menuHelp.Size = new System.Drawing.Size(44, 20);
             this.m_menuHelp.Text = "Help";
-            // 
+            //
             // m_menuAbout
-            // 
+            //
             this.m_menuAbout.Image = global::LifeEngine.Properties.Resources.IconHelp;
             this.m_menuAbout.Name = "m_menuAbout";
             this.m_menuAbout.Size = new System.Drawing.Size(152, 22);
             this.m_menuAbout.Text = "About";
             this.m_menuAbout.Click += new System.EventHandler(this.MenuHelpAboutClick);
-            // 
+            //
             // lblRules
-            // 
+            //
             this.lblRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblRules.AutoSize = true;
             this.lblRules.Location = new System.Drawing.Point(359, 5);
@@ -306,9 +341,9 @@
             this.lblRules.TabIndex = 15;
             this.lblRules.Text = "Rules:";
             this.lblRules.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            // 
+            //
             // m_sizeCombobox
-            // 
+            //
             this.m_sizeCombobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.m_sizeCombobox.FormattingEnabled = true;
             this.m_sizeCombobox.Location = new System.Drawing.Point(304, 632);
@@ -316,9 +351,9 @@
             this.m_sizeCombobox.Size = new System.Drawing.Size(58, 21);
             this.m_sizeCombobox.TabIndex = 16;
             this.m_sizeCombobox.SelectedIndexChanged += new System.EventHandler(this.SizeComboboxSelectedIndexChanged);
-            // 
+            //
             // m_sizeLabel
-            // 
+            //
             this.m_sizeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.m_sizeLabel.AutoSize = true;
             this.m_sizeLabel.Location = new System.Drawing.Point(268, 635);
@@ -327,9 +362,9 @@
             this.m_sizeLabel.TabIndex = 17;
             this.m_sizeLabel.Text = "Size:";
             this.m_sizeLabel.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            // 
+            //
             // m_speedCombobox
-            // 
+            //
             this.m_speedCombobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.m_speedCombobox.FormattingEnabled = true;
             this.m_speedCombobox.Location = new System.Drawing.Point(304, 661);
@@ -337,9 +372,9 @@
             this.m_speedCombobox.Size = new System.Drawing.Size(58, 21);
             this.m_speedCombobox.TabIndex = 18;
             this.m_speedCombobox.SelectedIndexChanged += new System.EventHandler(this.SpeedComboboxSelectedIndexChanged);
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(257, 666);
@@ -348,9 +383,9 @@
             this.label1.TabIndex = 19;
             this.label1.Text = "Speed:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            // 
+            //
             // FormLife
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(604, 688);
@@ -375,7 +410,15 @@
             this.Controls.Add(this.m_panelScroller);
             this.Controls.Add(this.m_menuStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            //
+            // The form's icon comes from the executable rather than from
+            // FormLife.resx. That .resx held a System.Drawing.Icon, which the SDK
+            // writes in a format the .NET Framework runtime cannot read without a
+            // binding redirect, so it is no longer compiled in. The application
+            // icon is set by ApplicationIcon in the project file, and this reads
+            // it back out of the running image.
+            //
+            this.Icon = LifeEngine.FormIcon.Load();
             this.MainMenuStrip = this.m_menuStrip;
             this.MaximizeBox = false;
             this.Name = "FormLife";
@@ -407,6 +450,10 @@
         private System.Windows.Forms.Label m_labelPopulation;
         private System.Windows.Forms.MenuStrip m_menuStrip;
         private System.Windows.Forms.ToolStripMenuItem m_menuOptions;
+        private System.Windows.Forms.ToolStripMenuItem m_menuWorld;
+        private System.Windows.Forms.ToolStripMenuItem m_menuWorldNew;
+        private System.Windows.Forms.ToolStripMenuItem m_menuWorldEmpty;
+        private System.Windows.Forms.ToolStripMenuItem m_menuWorldRun;
         private System.Windows.Forms.ToolStripMenuItem m_menuGrid;
         private System.Windows.Forms.ToolStripMenuItem m_menuLiveColor;
         private System.Windows.Forms.ToolStripMenuItem m_menuDeadColor;

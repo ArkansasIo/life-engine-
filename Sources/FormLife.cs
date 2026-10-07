@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * LifeEngine is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -12,17 +12,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright © 2017 RangeMachine
+ * Copyright © 2026 ArkansasIo
  */
 
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using LifeEngine.Ecosystem;
+
 namespace LifeEngine
 {
     enum ZoomType { In, Out }
-    
+
     public partial class FormLife : Form
     {
         private double m_probability;
@@ -41,11 +43,14 @@ namespace LifeEngine
         private int m_zoomCount;
 
         private DateTime m_startTime;
-        
+
+        private LifeEngine.Ecosystem.Ecosystem m_ecosystem;
+        private int m_worldSeed;
+
         public FormLife()
         {
             InitializeComponent();
-            
+
             m_probability = 0.15;
             m_stepNumber = 0;
             m_gameRules = new List<string>();
@@ -68,7 +73,7 @@ namespace LifeEngine
             m_timer = new Timer();
             m_timer.Enabled = false;
             m_timer.Interval = (11 - m_simulationSpeed) * 10;
-            
+
             m_timer.Tick += new EventHandler(TimerTick);
 
             m_rulesCombobox.TextChanged += new EventHandler(RulesComboboxTextChanged);
@@ -87,8 +92,64 @@ namespace LifeEngine
             m_buttonZoomOut.Click += new EventHandler(ButtonZoomOutClick);
 
             m_buttonStop.Enabled = false;
+
+            m_worldSeed = WorldFactory.DefaultSeed;
         }
-        
+
+        /// <summary>
+        /// Builds a world map and an ecosystem on top of it, sized to the grid
+        /// the simulator is currently using, and reports what was created.
+        /// </summary>
+        private void BuildWorld(bool seedLife)
+        {
+            LifeEngine.Ecosystem.Ecosystem ecosystem = seedLife
+                ? WorldFactory.CreateDefaultWorld(m_lifeGame.Columns, m_lifeGame.Rows, m_worldSeed)
+                : WorldFactory.CreateEmptyWorld(m_lifeGame.Columns, m_lifeGame.Rows, m_worldSeed);
+
+            m_ecosystem = ecosystem;
+
+            if (seedLife)
+                m_ecosystem.SeedPopulations();
+
+            ShowText("World", m_ecosystem.Summarise());
+        }
+
+        /// <summary>Runs the ecosystem forward and reports the result.</summary>
+        private void RunWorld(int ticks)
+        {
+            if (m_ecosystem == null)
+            {
+                MessageBox.Show(this, "Build a world first (World menu, New World).",
+                                "No world", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            m_ecosystem.Run(ticks);
+
+            ShowText("World after " + ticks + " ticks", m_ecosystem.Summarise());
+        }
+
+        /// <summary>Shows text in a scrollable, resizable window.</summary>
+        private void ShowText(string title, string text)
+        {
+            Form window = new Form();
+            TextBox view = new TextBox();
+
+            view.Multiline = true;
+            view.ReadOnly = true;
+            view.ScrollBars = ScrollBars.Both;
+            view.WordWrap = false;
+            view.Dock = DockStyle.Fill;
+            view.Font = new System.Drawing.Font("Consolas", 9.0f);
+            view.Text = text;
+
+            window.Text = title;
+            window.ClientSize = new System.Drawing.Size(620, 520);
+            window.StartPosition = FormStartPosition.CenterParent;
+            window.Controls.Add(view);
+            window.Show(this);
+        }
+
         private void ResizeGrid()
         {
             m_gridSize = int.Parse(m_sizeCombobox.Items[m_sizeCombobox.SelectedIndex].ToString());
@@ -147,7 +208,7 @@ namespace LifeEngine
             m_gameRules.Add("/234          - Serviettes");
             m_gameRules.Add("235678/3678   - Stains");
             m_gameRules.Add("2345/45678    - Walled cities");
-            
+
             foreach (string rule in m_gameRules)
             {
                 m_rulesCombobox.Items.Add(rule);
@@ -364,6 +425,24 @@ namespace LifeEngine
         private void MenuHelpAboutClick(object sender, EventArgs e)
         {
             MessageBox.Show(this, "Game of Life is a cellular automata simulator which defaults to the rules for Conway's Game of Life. It can also be set to use several other GoL rulesets.\n\nCopyright © 2017 RangeMachine", "About");
+        }
+
+        private void MenuWorldNewClick(object sender, EventArgs e)
+        {
+            BuildWorld(true);
+        }
+
+        private void MenuWorldEmptyClick(object sender, EventArgs e)
+        {
+            BuildWorld(false);
+
+            if (m_ecosystem != null)
+                m_ecosystem.SeedPopulations();
+        }
+
+        private void MenuWorldRunClick(object sender, EventArgs e)
+        {
+            RunWorld(100);
         }
     }
 }

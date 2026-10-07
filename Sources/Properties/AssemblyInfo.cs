@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright © 2017 RangeMachine
+ * Copyright © 2026 ArkansasIo
  */
 
 using System.Reflection;
@@ -21,9 +21,9 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Game of Life")]
 [assembly: AssemblyDescription("Game of Life is a cellular automata simulator which defaults to the rules for Conway's Game of Life. It can also be set to use several other GoL rulesets.")]
-[assembly: AssemblyCompany("RangeMachine")]
+[assembly: AssemblyCompany("ArkansasIo")]
 [assembly: AssemblyProduct("Game of Life")]
-[assembly: AssemblyCopyright("Copyright © 2017 RangeMachine")]
+[assembly: AssemblyCopyright("Copyright © 2026 ArkansasIo")]
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

@@ -1,0 +1,114 @@
+# LifeEngine settings
+# Lines look like  Key = Value  under a  [Category]  heading.
+# An entry whose key is unknown here is ignored; a missing entry keeps
+# the value the program was built with.
+#
+# This is the file the program writes when it saves. It documents every
+# setting the program reads, with the value it ships with.
+
+[Application]
+# Name shown in the title bar and the About box.
+Name = LifeEngine
+# Who builds this program.
+Developer = ArkansasIo
+# The channel updates are taken from: stable or beta.
+UpdateChannel = stable
+# Whether to look for a newer build on start-up.
+CheckForUpdates = true
+# Whether to write the settings file back when the program closes.
+SaveSettingsOnExit = true
+# Path to a settings file to load instead of this one. Empty means this one.
+SettingsFile =
+
+[Window]
+# Starting width of the main window in pixels.
+Width = 604
+# Starting height of the main window in pixels.
+Height = 688
+# Whether the window opens centred on the screen.
+CenterOnStart = true
+# Whether the grid panel docks to the left of the simulator.
+SidebarVisible = true
+# Width of the control sidebar in pixels.
+SidebarWidth = 220
+
+[Simulation]
+# Cells per side: 25, 50, 75, 100, 150, 200 or 250.
+GridSize = 100
+# Speed preset, 1 (slowest) to 10 (fastest). The timer interval is
+# (11 - Speed) * 10 milliseconds.
+Speed = 10
+# The ruleset, in survive/birth notation.
+Rules = 23/3
+# Density used when the grid is randomised, 0.01 to 1.00.
+RandomDensity = 0.15
+# Whether the simulation starts running as soon as the program opens.
+AutoStart = false
+
+[Appearance]
+# Whether the fine grid lines between cells are drawn.
+ShowGrid = true
+# Thickness of those lines, in pixels.
+GridLineSize = 1
+# Colour of a live cell, as #rrggbb or a colour name.
+LiveColor = #00bfff
+# Colour of an empty cell.
+DeadColor = #ffffff
+# Colour of a cell that has been alive before.
+HistoryColor = #90ee90
+# Colour behind the cells.
+BackgroundColor = #ffffff
+# Zoom at start-up, 1 to 5.
+Zoom = 1
+
+[World]
+# Seed for world generation. The same seed always builds the same planet.
+Seed = 20261007
+# Fraction of the elevation range at or below which everything is water,
+# from -1.00 to 1.00.
+SeaLevel = 0.00
+# Height in metres at which mountains become impassable.
+MountainLine = 2000
+# Whether rivers are cut from the high ground down to the sea.
+CutRivers = true
+# Scale factor for elevation detail, 0.10 to 4.00.
+TerrainDetail = 1.00
+
+[Ecosystem]
+# How many ticks the ecosystem runs when the Run command is used.
+TicksPerRun = 100
+# Whether the ecosystem advances on every simulation step.
+FollowSimulation = false
+# Multiplier on every species' growth rate, 0.10 to 12.00.
+GrowthMultiplier = 1.00
+# Multiplier on every species' death rate, 0.10 to 12.00.
+DeathMultiplier = 1.00
+# Whether a species with nobody left is dropped from the registry.
+AllowExtinction = true
+# Whether species spread into empty neighbouring tiles.
+Migration = true
+
+[Updates]
+# Channel name to read the manifest from.
+Channel = stable
+# Path or URL of the update manifest.
+ManifestPath = Updates\updates.xml
+# Whether prerelease builds are offered.
+AllowPrerelease = false
+# Whether a package's SHA-256 is checked before it is applied.
+VerifyChecksums = true
+# Whether the program may restart itself after applying an update.
+RestartAfterUpdate = true
+# Whether only the changed files in a patch are written, rather than
+# the whole package.
+ApplyPatchesIncrementally = true
+
+[Diagnostics]
+# Verbosity of the log: silent, error, warning, info or debug.
+LogLevel = info
+# Where the log is written. Empty means the settings folder.
+LogFile =
+# Whether a crash is written to the log before the program closes.
+LogUnhandledExceptions = true
+# Whether timings are printed around each generation.
+ProfileSimulation = false
