@@ -21,7 +21,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using LifeEngine.Biology;
-using LifeEngine.WolfLogic;
+using LifeEngine.Wolves;
 
 namespace LifeEngine.Gui
 {

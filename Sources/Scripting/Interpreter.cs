@@ -961,7 +961,9 @@ namespace LifeEngine.Scripting
 
         private Value EvaluateCall(Node node, Scope scope)
         {
-            Value function = Evaluate(node.Children[0], scope);
+            Node callee = node.Children[0];
+
+            Value function = Evaluate(callee, scope);
 
             List<Value> arguments = new List<Value>();
 
@@ -999,6 +1001,18 @@ namespace LifeEngine.Scripting
 
                     return instance;
                 }
+            }
+
+            // obj.method(...) — the receiver becomes self, so a method written
+            // with a dot call binds just as one called with a colon does. Without
+            // this, self was nil inside a method and every field write failed.
+            if (callee.Kind == NodeKind.Field && callee.Children.Count > 0)
+            {
+                Value receiver = Evaluate(callee.Children[0], scope);
+                ScriptClass owner = receiver.Host as ScriptClass;
+
+                if (owner != null && function.IsCallable)
+                    return CallWithSelf(function, receiver, owner, arguments, scope);
             }
 
             return CallValue(function, arguments, scope);

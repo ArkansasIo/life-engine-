@@ -47,7 +47,7 @@ namespace LifeEngine.Gui
         private ScriptManager m_scripts;
         private Ecosystem.Ecosystem m_ecosystem;
         private Biology.WolfPack m_pack;
-        private WolfLogic.Prey m_prey;
+        private Wolves.Prey m_prey;
         private List<string> m_eventLog;
         private Random m_random;
         private int m_seed;
@@ -100,7 +100,7 @@ namespace LifeEngine.Gui
         }
 
         /// <summary>What the pack hunts.</summary>
-        public WolfLogic.Prey Prey
+        public Wolves.Prey Prey
         {
             get { return m_prey; }
         }
@@ -165,6 +165,29 @@ namespace LifeEngine.Gui
             m_game = new LifeGame(m_config.GetInt(ConfigDefaults.GridSize));
 
             Log(m_version.TitleLine() + " ready");
+        }
+
+        // ------------------------------------------------------------------
+        // Simulation
+        // ------------------------------------------------------------------
+
+        /// <summary>
+        /// Changes the rule the simulator is running, and says so in the log.
+        /// The rules can be changed while the simulation is running, which is
+        /// the whole point of having them on a menu rather than a start-up
+        /// option.
+        /// </summary>
+        public void ApplyRules(string rule)
+        {
+            if (string.IsNullOrEmpty(rule))
+                return;
+
+            m_game.ChangeRules(rule);
+            m_config.SetString(ConfigDefaults.Rules, rule);
+
+            Log("rules changed to " + rule);
+
+            Notify();
         }
 
         // ------------------------------------------------------------------
@@ -347,7 +370,7 @@ namespace LifeEngine.Gui
 
             m_pack.SettleRanks();
 
-            m_prey = new WolfLogic.Prey("Red Deer", 120.0, 55.0, 0.35, 40);
+            m_prey = new Wolves.Prey("Red Deer", 120.0, 55.0, 0.35, 40);
             m_prey.MaxPopulation = 120;
             m_prey.GrowthRate = 0.08;
 
@@ -359,7 +382,7 @@ namespace LifeEngine.Gui
         }
 
         /// <summary>Runs one night: the herd grows, the pack hunts, ranks shift.</summary>
-        public WolfLogic.HuntResult RunNight(bool fullMoon)
+        public Wolves.HuntResult RunNight(bool fullMoon)
         {
             if (m_pack == null)
             {
@@ -367,7 +390,7 @@ namespace LifeEngine.Gui
                 return null;
             }
 
-            WolfLogic.HuntResult result = WolfLogic.WolfLogic.Night(m_pack, m_prey, fullMoon, m_random);
+            Wolves.HuntResult result = Wolves.WolfBehaviour.Night(m_pack, m_prey, fullMoon, m_random);
 
             if (result != null)
                 Log(result.Narrative);
@@ -386,7 +409,7 @@ namespace LifeEngine.Gui
                 return;
             }
 
-            List<Biology.Wolf> left = WolfLogic.WolfLogic.Season(m_pack, 0.25, 0.5, 12, m_random);
+            List<Biology.Wolf> left = Wolves.WolfBehaviour.Season(m_pack, 0.25, 0.5, 12, m_random);
 
             Log("season passed: pack now " + m_pack.Count + " wolves" +
                 (left.Count > 0 ? ", " + left.Count + " dispersed" : string.Empty));

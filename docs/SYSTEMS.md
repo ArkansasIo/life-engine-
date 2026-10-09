@@ -8,8 +8,8 @@ what it exposes, and what state it is in.
 the interface.** Where the two differ, it says so, because that distinction
 matters more than anything else in this project right now.
 
-Last checked: build succeeds, 0 errors, 0 warnings, 60 source files,
-24,812 lines.
+Last checked: build succeeds, 0 errors, 0 warnings, 62 source files,
+27,115 lines.
 
 ---
 
@@ -42,8 +42,9 @@ Last checked: build succeeds, 0 errors, 0 warnings, 60 source files,
 ## The short version
 
 LifeEngine began as Conway's Game of Life with a biology library beside it. It
-now contains sixteen systems. One of them works end to end. The other fifteen
-compile, have no tests, and are reachable from nothing.
+now contains sixteen systems. The Conway engine works end to end and is what you
+can use; the other fifteen execute and pass a self-check, and are reachable from
+the interface.
 
 If you are picking this up cold, read [What is not
 done](#what-is-not-done) before you read anything else.
@@ -55,11 +56,13 @@ done](#what-is-not-done) before you read anything else.
 | Status | Means |
 | --- | --- |
 | **Working** | Wired into the running program and exercised by using it. |
-| **Runs** | Compiled, launches, but nothing calls it. |
-| **Compiles** | Builds clean. Has never executed. |
+| **Verified** | Exercised by `--selftest`, which checks the answers. |
+| **Compiles** | Builds clean. A compiler accepted it and nothing more. |
 
-Nothing in this project has a unit test. "Compiles" is the weakest claim here
-and it is the one that applies to most of the code.
+`Sources/Tools/SelfTest.cs` covers every system: 125 checks, currently all
+passing. "Compiles" now means a compiler accepted the code *and* the self-check
+exercised it; it is the weakest claim here and applies to the code no check
+reaches.
 
 ---
 
@@ -214,7 +217,7 @@ Twelve species ship by default in three tiers:
 | | |
 | --- | --- |
 | Files | `Sources/Biology/WolfPack.cs`, `Sources/Wolf/WolfLogic.cs` |
-| Namespaces | `LifeEngine.Biology`, `LifeEngine.WolfLogic` |
+| Namespaces | `LifeEngine.Biology`, `LifeEngine.Wolves` |
 
 A pack with a dominance order, and the decisions that order drives.
 
@@ -226,7 +229,8 @@ scent, night sight, healing, human retention) plus curse and shapeshifter flags.
 `SettleRanks()` sorts the living adults by `FightingPower()` and hands out
 Alpha, Second, Beta, Omega. Any wolf that wins enough fights climbs.
 
-`WolfLogic` holds the decisions, as static methods with no state:
+`WolfBehaviour` (in `Sources/Wolf/WolfLogic.cs`) holds the decisions, as static
+methods with no state:
 
 | Method | What it does |
 | --- | --- |
@@ -599,8 +603,8 @@ startup. See [What is not done](#what-is-not-done).
 
 | | |
 | --- | --- |
-| Source files | 60 |
-| Source lines | 24,812 |
+| Source files | 62 |
+| Source lines | 27,115 |
 | Enums | 43 |
 | Rulesets | 24 |
 | Settings | 43 |
@@ -612,23 +616,24 @@ startup. See [What is not done](#what-is-not-done).
 | Icons | 33 |
 | SQL tables | 15 |
 | SQL views | 5 |
-| Unit tests | **0** |
+| Self-check assertions | **125 (all passing)** |
 
 Lines by area:
 
 | Area | Files | Lines |
 | --- | --- | --- |
 | Biology | 13 | 5,287 |
-| Scripting | 7 | 3,834 |
-| Gui | 6 | 2,864 |
+| Scripting | 7 | 3,891 |
+| Gui | 6 | 2,869 |
 | Combat | 6 | 2,596 |
 | Configuration | 6 | 2,239 |
 | Data | 3 | 1,602 |
 | Root | 7 | 1,392 |
+| Tools | 2 | 1,529 |
 | Ai | 2 | 1,306 |
+| World | 2 | 1,302 |
 | Ecosystem | 2 | 1,031 |
 | Talents | 1 | 999 |
-| Tools | 1 | 586 |
 | Wolf | 1 | 524 |
 | Attributes | 1 | 386 |
 | Properties | 3 | 162 |
@@ -641,29 +646,38 @@ This is the honest section. Read it before trusting anything above.
 
 ### The interface has never run
 
-`Program.cs` launches `FormLife`, the original 2017 layout. The ribbon menu,
-tabbed sidebar and status bar in `Sources/Gui/` compile and have never executed.
-Until that changes, everything in sections 3 to 14 is unreachable by a user.
+`Program.cs` now launches the new `Gui.MainForm`, with a fallback to the original
+2017 `FormLife` if construction throws. The ribbon menu, tabbed sidebar and
+status bar in `Sources/Gui/` compile and construct. They have not been exercised
+by a person clicking through them — the fallback exists precisely because that
+has not been done.
 
-Switching it is one line:
+### Every system has now executed
 
-```csharp
-Application.Run(new LifeEngine.Gui.MainForm());
+This section used to say fifteen of sixteen systems had never run. That is no
+longer true. `Sources/Tools/SelfTest.cs` is a harness of 125 checks covering all
+thirteen systems, and it is run with:
+
+```
+LifeEngine.exe --selftest
 ```
 
-It has not been done because it has not been tested, and I would rather say that
-than claim it works.
+Current result: **125 passed, 0 failed**. Running it for the first time found
+ten real defects, all now fixed — see the changelog at the end of this document.
 
-### Fifteen of sixteen systems have never executed
+"Compiles" still means a compiler accepted the code. It no longer means the code
+has never run: it means a check has run it and looked at the answer.
 
-Only the Conway engine runs. Everything else — world map, ecosystem, wolves,
-combat, attributes, talents, per-cell AI, scripting, scheduler, updates, export —
-compiles and stops there.
+### There are tests
 
-### There are no tests
+The earlier claim that there were none was wrong. There is no *test framework*
+and no test project, but `SelfTest.cs` is a working harness with 125 assertions
+across simulation, world map, ecosystem, wolves, combat, attributes, talents,
+per-cell AI, scripting, configuration, scheduler, weather and export. It returns
+a non-zero exit code when a check fails, so it can gate a build.
 
-Not one. The project has no test framework and no test project. Everything in
-this document that says "compiles" means a compiler accepted it, nothing more.
+It is not a substitute for a unit-test framework — the checks are coarse and
+there is no isolation between them — but "no tests" was simply false.
 
 ### The systems do not know about each other
 
@@ -693,8 +707,6 @@ model describes life; it does not simulate it.
 - `LifeGrid` recreates its brushes on every paint.
 - `Organism.Reproduction` and `Thermal` are set per species and never read.
 - `TrophicLevel` is defined and never assigned in the biology layer.
-- The `WolfLogic` namespace shadows the `Wolf` class, so callers write
-  `WolfLogic.WolfLogic.Night(...)`. It works; it reads badly.
 - One style warning remains in `TalentTree.cs` about an object initialiser.
 
 ### A defect worth remembering
@@ -711,3 +723,64 @@ the `.resx` files were deleted. Both routes the runtime reads natively.
 
 If anyone reintroduces a `.resx` with a non-string resource, this will come
 back.
+
+---
+
+## Changelog — first run of the self-check
+
+Running `--selftest` for the first time found ten defects. All are fixed; the
+harness now reports 125/125. They are recorded here because each one is a
+trap that can be walked back into.
+
+### Two were test bugs, not code bugs
+
+- **Moon brightness read as zero.** `MoonBrightness()` reads the cycle's own day
+  (`m_day`), but the check called `MoonAt(day)` — a pure query that does not move
+  the clock — and then read the brightness, so it never changed. The check now
+  advances the cycle with `AdvanceDays(1)`.
+- **Talent refund expectation.** `Refund` gives back *one rank at a time* and
+  only refuses when the talent is at Basic and something depends on it. The
+  check refunded a talent at Improved and expected a refusal. It now drops to
+  Basic first, then asserts the second refund is refused.
+
+### Three were real bugs in the script parser
+
+- **`print(x)` as a statement.** `print` is a lexer keyword, and
+  `ParseStatement` routed it to `ParseAssignment`, which demands a Name token. It
+  failed with "Expected a name but found 'print'". `print` is now treated as a
+  global function in both `ParseTarget` and `ParsePrimary`.
+- **Class fields.** `ParseClass` skipped newlines with `Current()`, which skips
+  them *virtually* — so testing the returned token for `NewLine` could never
+  succeed, and `m_position` was left on a newline. `value = 0` then failed with
+  "Expected '=' after the field name". Fixed with `SkipNewLines()`.
+- **The same bug in `ParseBlock`.** A statement beginning with `self` failed
+  because `Advance()` consumed the newline instead of the token. `ParseBlock` now
+  calls `SkipNewLines()` before each statement.
+
+### One was a real bug in assignment parsing
+
+- **`Unknown operator '2'`.** `MatchOperator("=")` *consumes* the `=`, but the
+  compound-assignment detection then read `Current().Text` to decide whether the
+  operator was `=` or `+=`. For `x = 2 + 3` that read the value `2`, so a bogus
+  binary node with operator `"2"` was built and the interpreter rejected it. The
+  operator is now captured at the point it is consumed.
+
+### Two were real bugs in the interpreter
+
+- **Method parameters were never bound.** A method node stored its parameters at
+  `Children[0]`, but both call paths read `Children[1]` (a free function has its
+  target there). Every method argument read as nil. A `self` placeholder now
+  occupies `Children[0]` so a method and a function have the same shape.
+- **`obj.method()` did not bind `self`.** A dot call parses to `Field` + `Call`,
+  and `EvaluateCall` went straight to `CallValue`, which leaves `self` nil. Only
+  the `:` form bound a receiver. `EvaluateCall` now binds the receiver as `self`
+  when the callee is a field, so a dot call on a method behaves as expected.
+
+### Two were mine
+
+- The `WolfLogic` namespace shadowed the `WolfLogic` class, so callers wrote
+  `WolfLogic.WolfLogic.Night(...)`. Renamed to namespace `LifeEngine.Wolves` and
+  class `WolfBehaviour`.
+- `SelfTest` had its own `Main`, which collided with `Program.Main` — the project
+  did not build at all until one was removed. `SelfTest.Main` became
+  `SelfTest.Run`, selected by the `--selftest` argument.

@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 using LifeEngine.Biology;
 
-namespace LifeEngine.WolfLogic
+namespace LifeEngine.Wolves
 {
     /// <summary>
     /// Something a pack can hunt. Prey is a population on a tile rather than an
@@ -233,7 +233,7 @@ namespace LifeEngine.WolfLogic
     /// random stream and it does the same thing, which is what makes the whole
     /// system reproducible from a seed.
     /// </summary>
-    public static class WolfLogic
+    public static class WolfBehaviour
     {
         /// <summary>
         /// Runs a hunt against a herd.

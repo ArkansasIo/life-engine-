@@ -76,8 +76,10 @@ namespace LifeEngine.Tools
                      Check_(name, false, detail);
               }
 
-              internal static int Main(string[] arguments)
+              internal static int Run(string[] arguments)
               {
+                     m_checks.Clear();
+
                      Console.WriteLine("LifeEngine self-check");
                      Console.WriteLine("=====================");
                      Console.WriteLine();
@@ -452,10 +454,10 @@ namespace LifeEngine.Tools
                      }
 
                      // A hunt against a herd.
-                     WolfLogic.Prey prey = new WolfLogic.Prey("Deer", 120.0, 55.0, 0.35, 40);
+                     Wolves.Prey prey = new Wolves.Prey("Deer", 120.0, 55.0, 0.35, 40);
 
                      int herd = prey.Population;
-                     WolfLogic.HuntResult hunt = WolfLogic.WolfLogic.Hunt(pack, prey, true, new Random(7));
+                     Wolves.HuntResult hunt = Wolves.WolfBehaviour.Hunt(pack, prey, true, new Random(7));
 
                      Check_("a hunt produces a result", hunt != null,
                             hunt == null ? "no result" : hunt.Narrative);
@@ -478,13 +480,13 @@ namespace LifeEngine.Tools
                             energySane ? "health and energy within 0 to 1" : "a wolf left the range");
 
                      // A season must age them and not throw.
-                     WolfLogic.WolfLogic.Season(pack, 0.25, 0.5, 12, new Random(3));
+                     Wolves.WolfBehaviour.Season(pack, 0.25, 0.5, 12, new Random(3));
 
                      Check_("a season passes", pack.Count >= 0,
                             pack.Count + " wolves remain");
 
                      // The moon must not throw.
-                     WolfLogic.WolfLogic.Moonshift(pack, new Random(11));
+                     Wolves.WolfBehaviour.Moonshift(pack, new Random(11));
 
                      Check_("the moonshift runs", true, "no exception");
               }
@@ -695,7 +697,16 @@ namespace LifeEngine.Tools
                             set.RankOf("Savage Bite") == Talents.TalentRank.Improved,
                             "rank " + set.RankOf("Savage Bite"));
 
-                     // Refunding a prerequisite must be refused.
+                     // Refunding a prerequisite must be refused. Refund gives back
+                     // one rank at a time, so the talent must first be brought down
+                     // to Basic; the refund that would remove it entirely is the
+                     // one that has to be refused, because Rending Claws needs it.
+                     set.Refund("Savage Bite");
+
+                     Check_("a talent drops one rank per refund",
+                            set.RankOf("Savage Bite") == Talents.TalentRank.Basic,
+                            "rank " + set.RankOf("Savage Bite"));
+
                      bool refunded = set.Refund("Savage Bite");
 
                      Check_("a depended-on talent cannot be refunded", !refunded,
@@ -1134,21 +1145,24 @@ namespace LifeEngine.Tools
                      Check_("the moon passes through every phase", phasesSeen == 8,
                             phasesSeen + " of 8 phases seen in a month");
 
-                     // A full moon must be brighter than a new one.
+                     // A full moon must be brighter than a new one. The clock has
+                     // to be moved on, not merely queried: MoonAt reports the phase
+                     // for any day, but MoonBrightness reads the cycle's own day.
                      double fullBrightness = 0.0;
                      double newBrightness = 0.0;
 
                      for (int day = 0; day < 30; day++)
                      {
-                            cycle.MoonAt(day);
-
+                            World.MoonPhase phase = cycle.MoonAt(cycle.Day);
                             double brightness = cycle.MoonBrightness();
 
-                            if (cycle.MoonAt(day) == World.MoonPhase.Full && brightness > fullBrightness)
-                                fullBrightness = brightness;
+                            if (phase == World.MoonPhase.Full && brightness > fullBrightness)
+                                   fullBrightness = brightness;
 
-                            if (cycle.MoonAt(day) == World.MoonPhase.New && brightness > newBrightness)
-                                newBrightness = brightness;
+                            if (phase == World.MoonPhase.New && brightness > newBrightness)
+                                   newBrightness = brightness;
+
+                            cycle.AdvanceDays(1);
                      }
 
                      Check_("a full moon is brighter than a new one", fullBrightness > newBrightness,

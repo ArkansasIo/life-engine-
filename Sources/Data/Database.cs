@@ -789,7 +789,7 @@ namespace LifeEngine.Data
         }
 
         /// <summary>Writes one hunt.</summary>
-        public void WriteHunt(int packId, WolfLogic.HuntResult result, bool fullMoon)
+        public void WriteHunt(int packId, Wolves.HuntResult result, bool fullMoon)
         {
             if (!IsAvailable || packId <= 0 || result == null)
                 return;

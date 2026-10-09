@@ -188,8 +188,8 @@ namespace LifeEngine.Biology
     /// wounds and a place in a pack.
     ///
     /// The wolf does not decide anything itself. <see cref="WolfPack"/> and
-    /// <see cref="WolfLogic"/> hold the decisions, because a dominance order and
-    /// a hunt are properties of the group, not of one animal.
+    /// <see cref="LifeEngine.Wolves.WolfBehaviour"/> hold the decisions, because a
+    /// dominance order and a hunt are properties of the group, not of one animal.
     /// </summary>
     public sealed class Wolf
     {

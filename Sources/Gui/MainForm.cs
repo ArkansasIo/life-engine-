@@ -136,7 +136,10 @@ namespace LifeEngine.Gui
             m_menu.Items.Add(BuildSimulationMenu());
             m_menu.Items.Add(BuildViewMenu());
             m_menu.Items.Add(BuildWorldMenu());
+            m_menu.Items.Add(BuildEcosystemMenu());
             m_menu.Items.Add(BuildWolvesMenu());
+            m_menu.Items.Add(BuildBestiaryMenu());
+            m_menu.Items.Add(BuildDataMenu());
             m_menu.Items.Add(BuildToolsMenu());
             m_menu.Items.Add(BuildUpdatesMenu());
             m_menu.Items.Add(BuildHelpMenu());
@@ -248,6 +251,11 @@ namespace LifeEngine.Gui
 
             menu.DropDownItems.Add(size);
 
+            // Rules: the shape and the cadence, both as sub-menus, so the
+            // running questions are reachable without leaving the keyboard.
+            menu.DropDownItems.Add(BuildRulesSubMenu());
+            menu.DropDownItems.Add(BuildCadenceSubMenu());
+
             menu.DropDownItems.Add(new ToolStripSeparator());
 
             menu.DropDownItems.Add(Item("Reset &zoom", Keys.Control | Keys.D0, delegate
@@ -257,6 +265,138 @@ namespace LifeEngine.Gui
             }));
 
             return menu;
+        }
+
+        /// <summary>
+        /// The 24 rulesets as a sub-menu. The current one is ticked, and ticking
+        /// a new one changes the rules on the running simulation.
+        /// </summary>
+        private ToolStripMenuItem BuildRulesSubMenu()
+        {
+            ToolStripMenuItem rules = new ToolStripMenuItem("&Rules");
+
+            string[] names =
+            {
+                "23/3 - Conway's Life", "125/36 - 2x2", "34/34 - 34 Life",
+                "1358/357 - Amoeba", "35678/4678 - Anneal", "4567/345 - Assimilation",
+                "235678/378 - Coagulations", "45678/3 - Coral", "34678/3678 - Day & Night",
+                "5678/35678 - Diamoeba", "012345678/3 - Flakes", "1/1 - Gnarl",
+                "23/36 - HighLife", "34678/0123478 - Inverse Life", "5/345 - Long Life",
+                "12345/3 - Maze", "1234/3 - Mazectric", "245/368 - Move",
+                "238/357 - Pseudo Life", "1357/1357 - Replicator", "/2 - Seeds",
+                "/234 - Serviettes", "235678/3678 - Stains", "2345/45678 - Walled cities"
+            };
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                ToolStripMenuItem entry = new ToolStripMenuItem(names[i]);
+
+                entry.Tag = names[i].Substring(0, names[i].IndexOf(' '));
+
+                entry.Click += delegate(object sender, EventArgs e)
+                {
+                    ToolStripMenuItem picked = sender as ToolStripMenuItem;
+
+                    if (picked == null)
+                        return;
+
+                    // Untick the rest of the group, then tick this one.
+                    for (int j = 0; j < picked.Owner.Items.Count; j++)
+                    {
+                        ToolStripMenuItem other = picked.Owner.Items[j] as ToolStripMenuItem;
+
+                        if (other != null)
+                            other.Checked = false;
+                    }
+
+                    picked.Checked = true;
+
+                    m_context.ApplyRules(picked.Tag as string);
+                };
+
+                rules.DropDownItems.Add(entry);
+            }
+
+            // Only one ruleset is live at a time.
+            rules.DropDownOpening += delegate
+            {
+                string current = m_context.Game.Rules;
+
+                for (int i = 0; i < rules.DropDownItems.Count; i++)
+                {
+                    ToolStripMenuItem entry = rules.DropDownItems[i] as ToolStripMenuItem;
+
+                    if (entry == null)
+                        continue;
+
+                    entry.Checked = string.Equals(entry.Tag as string, current,
+                                                  StringComparison.Ordinal);
+                }
+            };
+
+            return rules;
+        }
+
+        /// <summary>
+        /// How fast the simulation runs: the four named speeds and the
+        /// millisecond interval each one stands for.
+        /// </summary>
+        private ToolStripMenuItem BuildCadenceSubMenu()
+        {
+            ToolStripMenuItem cadence = new ToolStripMenuItem("&Cadence");
+
+            int[] speeds = { 1, 2, 5, 10 };
+
+            for (int i = 0; i < speeds.Length; i++)
+            {
+                int value = speeds[i];
+
+                ToolStripMenuItem entry = new ToolStripMenuItem(
+                    value + "  (" + ((11 - value) * 10) + " ms per generation)");
+
+                entry.Tag = value;
+
+                entry.Click += delegate(object sender, EventArgs e)
+                {
+                    ToolStripMenuItem picked = sender as ToolStripMenuItem;
+
+                    if (picked == null)
+                        return;
+
+                    for (int j = 0; j < picked.Owner.Items.Count; j++)
+                    {
+                        ToolStripMenuItem other = picked.Owner.Items[j] as ToolStripMenuItem;
+
+                        if (other != null)
+                            other.Checked = false;
+                    }
+
+                    picked.Checked = true;
+
+                    m_context.Config.SetInt(ConfigDefaults.Speed, (int)picked.Tag);
+                    ApplyTimerInterval();
+                    RefreshEverything();
+                };
+
+                cadence.DropDownItems.Add(entry);
+            }
+
+            cadence.DropDownOpening += delegate
+            {
+                int current = m_context.Config.GetInt(ConfigDefaults.Speed);
+
+                for (int i = 0; i < cadence.DropDownItems.Count; i++)
+                {
+                    ToolStripMenuItem entry = cadence.DropDownItems[i] as ToolStripMenuItem;
+
+                    if (entry == null || !(entry.Tag is int))
+                        continue;
+
+                    entry.Checked = (int)entry.Tag == current;
+                }
+            };
+
+            return cadence;
         }
 
         private ToolStripMenuItem BuildViewMenu()
@@ -453,6 +593,519 @@ namespace LifeEngine.Gui
             }));
 
             return menu;
+        }
+
+        /// <summary>
+        /// The ecosystem: the shape of the world and how its species behave.
+        /// The two multipliers are the knobs that decide whether a run ends in
+        /// a balance or a collapse, so they get a sub-menu of their own.
+        /// </summary>
+        private ToolStripMenuItem BuildEcosystemMenu()
+        {
+            ToolStripMenuItem menu = new ToolStripMenuItem("&Ecosystem");
+
+            menu.DropDownItems.Add(Item("Build &world", Keys.None, delegate
+            {
+                if (m_context.BuildWorld(true))
+                    ShowTab(0);
+            }));
+
+            menu.DropDownItems.Add(Item("Build world (&barren)", Keys.None, delegate
+            {
+                if (m_context.BuildWorld(false))
+                    ShowTab(0);
+            }));
+
+            menu.DropDownItems.Add(new ToolStripSeparator());
+
+            menu.DropDownItems.Add(Item("&Run one tick", Keys.None, delegate
+            {
+                m_context.RunEcosystem(1);
+                ShowTab(0);
+            }));
+
+            menu.DropDownItems.Add(Item("Run &ten ticks", Keys.None, delegate
+            {
+                m_context.RunEcosystem(10);
+                ShowTab(0);
+            }));
+
+            menu.DropDownItems.Add(Item("Run &hundred ticks", Keys.None, delegate
+            {
+                m_context.RunEcosystem(100);
+                ShowTab(0);
+            }));
+
+            menu.DropDownItems.Add(new ToolStripSeparator());
+
+            menu.DropDownItems.Add(BuildGrowthSubMenu());
+            menu.DropDownItems.Add(BuildDeathSubMenu());
+
+            menu.DropDownItems.Add(new ToolStripSeparator());
+
+            menu.DropDownItems.Add(Item("Clear &life", Keys.None, delegate
+            {
+                m_context.ClearEcosystem();
+                ShowTab(0);
+            }));
+
+            menu.DropDownItems.Add(Item("&Census", Keys.None, delegate
+            {
+                ShowReport("Census", m_context.DescribeWorld());
+            }));
+
+            return menu;
+        }
+
+        /// <summary>Growth multiplier: 0.1x at the bottom, 12x at the top.</summary>
+        private ToolStripMenuItem BuildGrowthSubMenu()
+        {
+            ToolStripMenuItem growth = new ToolStripMenuItem("&Growth rate");
+
+            double[] rates = { 0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 12.0 };
+
+            for (int i = 0; i < rates.Length; i++)
+            {
+                double value = rates[i];
+
+                ToolStripMenuItem entry = new ToolStripMenuItem(value + "x");
+
+                entry.Tag = value;
+
+                entry.Click += delegate(object sender, EventArgs e)
+                {
+                    ToolStripMenuItem picked = sender as ToolStripMenuItem;
+
+                    if (picked == null)
+                        return;
+
+                    for (int j = 0; j < picked.Owner.Items.Count; j++)
+                    {
+                        ToolStripMenuItem other = picked.Owner.Items[j] as ToolStripMenuItem;
+
+                        if (other != null)
+                            other.Checked = false;
+                    }
+
+                    picked.Checked = true;
+
+                    m_context.Config.SetDouble(ConfigDefaults.GrowthMultiplier, (double)picked.Tag);
+
+                    m_context.Log("growth rate set to " + picked.Tag + "x");
+                    m_context.Notify();
+                };
+
+                growth.DropDownItems.Add(entry);
+            }
+
+            growth.DropDownOpening += delegate
+            {
+                double current = m_context.Config.GetDouble(ConfigDefaults.GrowthMultiplier);
+
+                for (int i = 0; i < growth.DropDownItems.Count; i++)
+                {
+                    ToolStripMenuItem entry = growth.DropDownItems[i] as ToolStripMenuItem;
+
+                    if (entry == null || !(entry.Tag is double))
+                        continue;
+
+                    entry.Checked = Math.Abs((double)entry.Tag - current) < 0.0001;
+                }
+            };
+
+            return growth;
+        }
+
+        /// <summary>Death multiplier, on the same ladder as growth.</summary>
+        private ToolStripMenuItem BuildDeathSubMenu()
+        {
+            ToolStripMenuItem death = new ToolStripMenuItem("&Death rate");
+
+            double[] rates = { 0.1, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0, 12.0 };
+
+            for (int i = 0; i < rates.Length; i++)
+            {
+                double value = rates[i];
+
+                ToolStripMenuItem entry = new ToolStripMenuItem(value + "x");
+
+                entry.Tag = value;
+
+                entry.Click += delegate(object sender, EventArgs e)
+                {
+                    ToolStripMenuItem picked = sender as ToolStripMenuItem;
+
+                    if (picked == null)
+                        return;
+
+                    for (int j = 0; j < picked.Owner.Items.Count; j++)
+                    {
+                        ToolStripMenuItem other = picked.Owner.Items[j] as ToolStripMenuItem;
+
+                        if (other != null)
+                            other.Checked = false;
+                    }
+
+                    picked.Checked = true;
+
+                    m_context.Config.SetDouble(ConfigDefaults.DeathMultiplier, (double)picked.Tag);
+
+                    m_context.Log("death rate set to " + picked.Tag + "x");
+                    m_context.Notify();
+                };
+
+                death.DropDownItems.Add(entry);
+            }
+
+            death.DropDownOpening += delegate
+            {
+                double current = m_context.Config.GetDouble(ConfigDefaults.DeathMultiplier);
+
+                for (int i = 0; i < death.DropDownItems.Count; i++)
+                {
+                    ToolStripMenuItem entry = death.DropDownItems[i] as ToolStripMenuItem;
+
+                    if (entry == null || !(entry.Tag is double))
+                        continue;
+
+                    entry.Checked = Math.Abs((double)entry.Tag - current) < 0.0001;
+                }
+            };
+
+            return death;
+        }
+
+        /// <summary>
+        /// The bestiary: the creatures a fight can be staged with, grouped by
+        /// the kind of creature it is, because that is the distinction that
+        /// decides which side it fights on.
+        /// </summary>
+        private ToolStripMenuItem BuildBestiaryMenu()
+        {
+            ToolStripMenuItem menu = new ToolStripMenuItem("&Bestiary");
+
+            menu.DropDownItems.Add(BuildBeastGroup("&Prey", Combat.BeastKind.Prey));
+            menu.DropDownItems.Add(BuildBeastGroup("&Rivals", Combat.BeastKind.Rival));
+            menu.DropDownItems.Add(BuildBeastGroup("Preda&tors", Combat.BeastKind.Predator));
+            menu.DropDownItems.Add(BuildBeastGroup("&Others", Combat.BeastKind.Other));
+
+            menu.DropDownItems.Add(new ToolStripSeparator());
+
+            menu.DropDownItems.Add(Item("Bestiary &summary", Keys.None, delegate
+            {
+                ShowReport("Bestiary", Combat.Bestiary.Describe());
+            }));
+
+            return menu;
+        }
+
+        /// <summary>One kind of creature, as a sub-menu.</summary>
+        private ToolStripMenuItem BuildBeastGroup(string title, Combat.BeastKind kind)
+        {
+            ToolStripMenuItem group = new ToolStripMenuItem(title);
+
+            List<Combat.Beast> beasts = Combat.Bestiary.OfKind(kind);
+
+            if (beasts == null || beasts.Count == 0)
+            {
+                ToolStripMenuItem none = new ToolStripMenuItem("(none defined)");
+
+                none.Enabled = false;
+                group.DropDownItems.Add(none);
+
+                return group;
+            }
+
+            for (int i = 0; i < beasts.Count; i++)
+            {
+                Combat.Beast beast = beasts[i];
+
+                ToolStripMenuItem entry = new ToolStripMenuItem(beast.Name);
+
+                entry.Click += delegate
+                {
+                    ShowReport("Beast: " + beast.Name, DescribeBeast(beast));
+                };
+
+                group.DropDownItems.Add(entry);
+            }
+
+            return group;
+        }
+
+        /// <summary>A beast as a short block of text for a report window.</summary>
+        private static string DescribeBeast(Combat.Beast beast)
+        {
+            if (beast == null)
+                return "No such beast.";
+
+            System.Text.StringBuilder text = new System.Text.StringBuilder();
+
+            text.AppendLine(beast.Name);
+            text.AppendLine(new string('-', beast.Name.Length));
+            text.AppendLine();
+            text.AppendLine("Kind        " + beast.Kind);
+            text.AppendLine("Side        " + beast.Side);
+            text.AppendLine("Symbol      " + beast.Symbol);
+            text.AppendLine("Strength    " + beast.Strength);
+            text.AppendLine("Speed       " + beast.Speed);
+            text.AppendLine("Mass        " + beast.Mass + " kg");
+            text.AppendLine("Defence     " + beast.Defence);
+            text.AppendLine("Aggression  " + beast.Aggression);
+            text.AppendLine("Health bonus " + beast.HealthBonus);
+            text.AppendLine();
+            text.AppendLine(beast.Description);
+
+            return text.ToString();
+        }
+
+        /// <summary>
+        /// Data: turning a run into something that outlives it. Every entry
+        /// here reads the live objects and writes a file; nothing is imported.
+        /// </summary>
+        private ToolStripMenuItem BuildDataMenu()
+        {
+            ToolStripMenuItem menu = new ToolStripMenuItem("&Data");
+
+            menu.DropDownItems.Add(Item("Export &everything (CSV)", Keys.None, delegate
+            {
+                ExportEverything();
+            }));
+
+            menu.DropDownItems.Add(Item("Export everything (Excel &workbook)", Keys.None, delegate
+            {
+                ExportWorkbook();
+            }));
+
+            menu.DropDownItems.Add(new ToolStripSeparator());
+
+            for (int i = 0; i < ExportBuilders.Length; i++)
+            {
+                ExportEntry entry = ExportBuilders[i];
+
+                menu.DropDownItems.Add(Item("Export " + entry.Label, Keys.None, delegate
+                {
+                    ExportOne(entry);
+                }));
+            }
+
+            menu.DropDownItems.Add(new ToolStripSeparator());
+
+            menu.DropDownItems.Add(Item("What would be exported", Keys.None, delegate
+            {
+                ShowReport("Export", DescribeExport());
+            }));
+
+            return menu;
+        }
+
+        /// <summary>
+        /// One exportable table: a label to show and the builder that produces
+        /// it. Held as data so the menu, the report and the export itself all
+        /// read from one list rather than three that can drift apart.
+        /// </summary>
+        private sealed class ExportEntry
+        {
+            public string Label;
+            public string FileName;
+            public Func<AppContext, Data.DataTable> Build;
+
+            public ExportEntry(string label, string fileName, Func<AppContext, Data.DataTable> build)
+            {
+                Label = label;
+                FileName = fileName;
+                Build = build;
+            }
+        }
+
+        private static readonly ExportEntry[] ExportBuilders =
+        {
+            new ExportEntry("&version", "version", Data.ExportBuilder.BuildVersion),
+            new ExportEntry("&grid summary", "grid-summary", Data.ExportBuilder.BuildGridSummary),
+            new ExportEntry("&generation", "generation", Data.ExportBuilder.BuildGeneration),
+            new ExportEntry("&world", "world", Data.ExportBuilder.BuildWorld),
+            new ExportEntry("&biome census", "biome-census", Data.ExportBuilder.BuildBiomeCensus),
+            new ExportEntry("&species", "species", Data.ExportBuilder.BuildSpecies),
+            new ExportEntry("tile &sample", "tile-sample", Data.ExportBuilder.BuildTileSample),
+            new ExportEntry("&pack", "pack", Data.ExportBuilder.BuildPack),
+            new ExportEntry("&wolves", "wolves", Data.ExportBuilder.BuildWolves),
+            new ExportEntry("&settings", "settings", Data.ExportBuilder.BuildSettings),
+            new ExportEntry("sc&hedules", "schedules", Data.ExportBuilder.BuildSchedules),
+            new ExportEntry("&releases", "releases", Data.ExportBuilder.BuildReleases),
+            new ExportEntry("&events", "events", Data.ExportBuilder.BuildEvents)
+        };
+
+        /// <summary>Which of the export tables has anything to say right now.</summary>
+        private string DescribeExport()
+        {
+            System.Text.StringBuilder text = new System.Text.StringBuilder();
+
+            text.AppendLine("Export reads the live objects. What each table holds:");
+            text.AppendLine();
+
+            for (int i = 0; i < ExportBuilders.Length; i++)
+            {
+                ExportEntry entry = ExportBuilders[i];
+
+                string state;
+
+                try
+                {
+                    Data.DataTable data = entry.Build(m_context);
+
+                    state = data == null ? "unavailable" : data.Rows.Count + " row(s)";
+                }
+                catch (Exception error)
+                {
+                    state = "failed - " + error.Message;
+                }
+
+                text.AppendLine("  " + entry.FileName.PadRight(16) + state);
+            }
+
+            text.AppendLine();
+            text.AppendLine("Output goes to the Exports folder beside the program.");
+
+            return text.ToString();
+        }
+
+        /// <summary>Exports every table that can be built, one CSV file each.</summary>
+        private void ExportEverything()
+        {
+            string folder = ExportFolder();
+
+            System.Text.StringBuilder report = new System.Text.StringBuilder();
+
+            report.AppendLine("Exported to " + folder);
+            report.AppendLine();
+
+            int written = 0;
+
+            for (int i = 0; i < ExportBuilders.Length; i++)
+            {
+                string message = WriteOne(folder, ExportBuilders[i]);
+
+                report.AppendLine(message);
+                m_context.Log(message);
+
+                written++;
+            }
+
+            report.AppendLine();
+            report.AppendLine(written + " file(s) written.");
+
+            m_context.Notify();
+
+            ShowReport("Export", report.ToString());
+        }
+
+        /// <summary>Exports every table into one Excel workbook.</summary>
+        private void ExportWorkbook()
+        {
+            string folder = ExportFolder();
+            string path = System.IO.Path.Combine(folder, "LifeEngine.xls");
+
+            List<Data.DataTable> tables = new List<Data.DataTable>();
+
+            for (int i = 0; i < ExportBuilders.Length; i++)
+            {
+                try
+                {
+                    Data.DataTable data = ExportBuilders[i].Build(m_context);
+
+                    if (data != null && data.Rows.Count > 0)
+                        tables.Add(data);
+                }
+                catch (Exception)
+                {
+                    // A table that cannot be built is left out rather than
+                    // aborting the workbook.
+                }
+            }
+
+            if (tables.Count == 0)
+            {
+                ShowReport("Export", "Nothing to export yet.\r\n\r\nBuild a world or found a pack first.");
+                return;
+            }
+
+            System.Text.StringBuilder report = new System.Text.StringBuilder();
+
+            try
+            {
+                List<string> problems = Data.SpreadsheetWriter.WriteWorkbook(path, tables);
+
+                report.AppendLine("Wrote " + tables.Count + " table(s) to " + path);
+
+                if (problems != null && problems.Count > 0)
+                {
+                    report.AppendLine();
+                    report.AppendLine("Problems:");
+
+                    for (int i = 0; i < problems.Count; i++)
+                        report.AppendLine("  " + problems[i]);
+                }
+
+                m_context.Log("workbook written: " + path);
+            }
+            catch (Exception error)
+            {
+                report.AppendLine("The workbook could not be written: " + error.Message);
+                report.AppendLine();
+                report.AppendLine("The Jet provider is part of Windows only where Office or the " +
+                                  "Access runtime is installed. Use " +
+                                  "Export everything (CSV) instead - it needs only a file system.");
+
+                m_context.Log("workbook export failed: " + error.Message);
+            }
+
+            m_context.Notify();
+
+            ShowReport("Export", report.ToString());
+        }
+
+        /// <summary>Exports one named table.</summary>
+        private void ExportOne(ExportEntry entry)
+        {
+            string folder = ExportFolder();
+            string message = WriteOne(folder, entry);
+
+            m_context.Log(message);
+            ShowReport("Export " + entry.FileName, message);
+        }
+
+        /// <summary>Writes one table as CSV, returning a line describing what happened.</summary>
+        private string WriteOne(string folder, ExportEntry entry)
+        {
+            try
+            {
+                Data.DataTable data = entry.Build(m_context);
+
+                if (data == null || data.Rows.Count == 0)
+                    return entry.FileName + ": nothing to write";
+
+                string path = System.IO.Path.Combine(folder, entry.FileName + ".csv");
+
+                Data.SpreadsheetWriter.WriteCsv(path, data);
+
+                return entry.FileName + ": " + data.Rows.Count + " row(s)";
+            }
+            catch (Exception error)
+            {
+                return entry.FileName + ": failed - " + error.Message;
+            }
+        }
+
+        /// <summary>The export folder, created on first use.</summary>
+        private static string ExportFolder()
+        {
+            string folder = System.IO.Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory, "Exports");
+
+            if (!System.IO.Directory.Exists(folder))
+                System.IO.Directory.CreateDirectory(folder);
+
+            return folder;
         }
 
         private ToolStripMenuItem BuildToolsMenu()

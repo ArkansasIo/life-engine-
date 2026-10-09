@@ -23,11 +23,40 @@ namespace LifeEngine
     static class Program
     {
         [STAThread]
-        static void Main()
+        static void Main(string[] arguments)
         {
+            // The self-test harness lives in Tools/SelfTest.cs and has its own
+            // entry point. Selecting it here, rather than at build time, keeps
+            // both reachable from the one executable.
+            if (arguments != null && arguments.Length > 0 &&
+                (arguments[0] == "--selftest" || arguments[0] == "-t"))
+            {
+                Environment.ExitCode = Tools.SelfTest.Run(arguments);
+                return;
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormLife());
+
+            // The new interface. If it cannot be constructed, fall back to the
+            // original 2017 form rather than leaving the user with a crash and
+            // nothing on screen.
+            try
+            {
+                Application.Run(new Gui.MainForm());
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(
+                    "The new interface failed to start, so the original window " +
+                    "will open instead.\n\n" +
+                    error.GetType().Name + ": " + error.Message,
+                    "LifeEngine",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                Application.Run(new FormLife());
+            }
         }
     }
 }

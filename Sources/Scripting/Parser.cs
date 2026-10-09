@@ -460,13 +460,15 @@ namespace LifeEngine.Scripting
 
             while (!AtEnd() && !IsBlockEnd())
             {
-                Token token = Current();
+                // Newlines must be consumed physically: Current() skips them
+                // virtually, so testing the token it returns for NewLine can
+                // never succeed. Leaving m_position on a newline made Advance()
+                // eat the newline instead of the first token of the statement,
+                // which is why a statement beginning with 'self' failed.
+                SkipNewLines();
 
-                if (token.Kind == TokenKind.NewLine)
-                {
-                    SkipNewLines();
-                    continue;
-                }
+                if (AtEnd() || IsBlockEnd())
+                    break;
 
                 Node statement = ParseStatement();
 
@@ -665,21 +667,21 @@ namespace LifeEngine.Scripting
                 node.Base = new Node(NodeKind.Name, parent.Line).SetName(parent.Text);
             }
 
-            // Skip to the first statement of the body.
+            // Skip to the first statement of the body. Newlines must be consumed
+            // physically here: Current() skips them virtually, so testing for a
+            // NewLine token after calling it can never succeed, and the class
+            // body's first line was left un-advanced — which made 'value = 0'
+            // fail with "Expected '=' after the field name".
+            SkipNewLines();
+
             while (!CheckKeyword("end") && !AtEnd())
             {
-                Token token = Current();
-
-                if (token.Kind == TokenKind.NewLine)
-                {
-                    Advance();
-                    continue;
-                }
-
                 Node member = ParseClassMember();
 
                 if (member != null)
                     node.Body.Add(member);
+
+                SkipNewLines();
             }
 
             ExpectKeyword("end");
@@ -700,6 +702,13 @@ namespace LifeEngine.Scripting
 
                 function.Name = name.Text;
                 function.ClassName = "method";
+
+                // A method has no written target, but the call paths expect the
+                // parameters at Children[1] (a free function has its target at
+                // Children[0]). A self node goes in that slot so a method and a
+                // function have the same shape — without it the parameters were
+                // never bound and every method argument read as nil.
+                function.Children.Add(new Node(NodeKind.Self, token.Line));
 
                 ParseParameters(function);
                 function.Body.Add(ParseBlock());
@@ -785,8 +794,29 @@ namespace LifeEngine.Scripting
             Token start = Current();
             Node target = ParseTarget();
 
-            if (!MatchOperator("=") && !CheckOperator("+=") && !CheckOperator("-=") &&
-                !CheckOperator("*=") && !CheckOperator("/="))
+            // '=' is consumed by MatchOperator, so it must be tested first and
+            // remembered. Reading Current() afterwards to detect a compound
+            // operator read the VALUE ('2' in "x = 2 + 3"), which then became the
+            // operator of a bogus binary node — the "Unknown operator '2'" bug.
+            string compound = null;
+
+            if (MatchOperator("="))
+            {
+                compound = "=";
+            }
+            else
+            {
+                Token op = Current();
+
+                if (op.Kind == TokenKind.Operator &&
+                    (op.Text == "+=" || op.Text == "-=" || op.Text == "*=" || op.Text == "/="))
+                {
+                    compound = op.Text;
+                    Advance();
+                }
+            }
+
+            if (compound == null)
             {
                 // Not an assignment: it must be a call on its own.
                 if (target.Kind != NodeKind.Call && target.Kind != NodeKind.MethodCall)
@@ -801,11 +831,6 @@ namespace LifeEngine.Scripting
 
             assignment.Name = isLocal ? "local" : "";
             assignment.Children.Add(target);
-
-            string compound = Current().Text;
-
-            if (compound != "=")
-                Advance();
 
             Node value = ParseExpression();
 
@@ -845,6 +870,14 @@ namespace LifeEngine.Scripting
             {
                 Advance();
                 return ParseSuffixes(new Node(NodeKind.Self, start.Line));
+            }
+
+            // 'print' is a keyword but acts as a global function, so a statement
+            // that begins with it is a call, not an assignment target.
+            if (start.Kind == TokenKind.Keyword && start.Text == "print")
+            {
+                Advance();
+                return ParseSuffixes(new Node(NodeKind.Name, start.Line).SetName(start.Text));
             }
 
             if (start.Kind != TokenKind.Name)
@@ -1221,6 +1254,14 @@ namespace LifeEngine.Scripting
                     {
                         Advance();
                         return ParseSuffixes(new Node(NodeKind.Self, token.Line));
+                    }
+
+                    if (token.Text == "print")
+                    {
+                        // 'print' is a keyword in the lexer but behaves as a
+                        // global function: print(x) is a call, not syntax.
+                        Advance();
+                        return ParseSuffixes(new Node(NodeKind.Name, token.Line).SetName(token.Text));
                     }
 
                     if (token.Text == "super")
