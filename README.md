@@ -561,6 +561,13 @@ LifeEngine/
 | [docs/BIOLOGY.md](docs/BIOLOGY.md) | Kingdoms, taxonomy, molecular biology, biomes, sample world. |
 | [docs/SYSTEMS.md](docs/SYSTEMS.md) | Wolf, combat, ecosystem and data subsystems. |
 | [docs/CONTROLS.md](docs/CONTROLS.md) | Every mouse gesture and keyboard shortcut. |
+| [docs/TESTING.md](docs/TESTING.md) | Build, self-test, simulation invariants, and UI smoke-test procedures. |
+| [docs/DATA_MODEL.md](docs/DATA_MODEL.md) | Core model boundaries and invariants for simulation, biology, ecosystems, and exports. |
+| [docs/GENERATOR.md](docs/GENERATOR.md) | Procedural generation stages, determinism contract, and acceptance checklist. |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Development setup, engineering expectations, and pull request guidance. |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting and security-sensitive components. |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Expected community conduct and maintainer response. |
+| [CHANGELOG.md](CHANGELOG.md) | Verified project changes and historical background. |
 
 ---
 
