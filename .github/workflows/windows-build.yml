@@ -1,0 +1,54 @@
+name: Windows build and self-test
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore and build
+        run: dotnet build Sources/LifeEngine.csproj --configuration Release
+
+      - name: Run self-tests
+        shell: pwsh
+        run: |
+          $candidates = @(
+            "Binaries/Release/LifeEngine.exe",
+            "Binaries/Release/net45/LifeEngine.exe"
+          )
+          $exe = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $exe) {
+            Get-ChildItem Binaries -Recurse -ErrorAction SilentlyContinue
+            throw "LifeEngine.exe was not found in the expected build output locations."
+          }
+          & $exe --selftest
+          if ($LASTEXITCODE -ne 0) {
+            throw "LifeEngine self-tests failed with exit code $LASTEXITCODE."
+          }
+
+      - name: Upload executable and symbols
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: LifeEngine-windows-release
+          path: |
+            Binaries/Release/**
+          if-no-files-found: error
+          retention-days: 14
