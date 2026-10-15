@@ -1,0 +1,16 @@
+// Path-mapped target for Sources/Biology/Genetics/MutationEngine.cs.
+// The original flat Noodle module is retained for compatibility.
+module LifeEngine.Noodle.Biology.Genetics.MutationEngine;
+
+schema MutationEnginePortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> MutationEnginePortStatus {
+    return MutationEnginePortStatus { source: "Sources/Biology/Genetics/MutationEngine.cs", status: "partial translation; parity review required", runtime_verified: false };
+}
+
+// Scope: seeded mutation proposals and audit trail.
+// Consolidate the existing flat Noodle implementation here after compiler conformance tests exist.

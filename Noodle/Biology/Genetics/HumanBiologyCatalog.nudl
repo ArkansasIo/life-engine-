@@ -1,0 +1,16 @@
+// Path-mapped target for Sources/Biology/Genetics/HumanBiologyCatalog.cs.
+// The original flat Noodle module is retained for compatibility.
+module LifeEngine.Noodle.Biology.Genetics.HumanBiologyCatalog;
+
+schema HumanBiologyCatalogPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> HumanBiologyCatalogPortStatus {
+    return HumanBiologyCatalogPortStatus { source: "Sources/Biology/Genetics/HumanBiologyCatalog.cs", status: "partial translation; parity review required", runtime_verified: false };
+}
+
+// Scope: human organ and system catalogue.
+// Consolidate the existing flat Noodle implementation here after compiler conformance tests exist.
