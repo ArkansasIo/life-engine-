@@ -1,0 +1,33 @@
+module LifeEngine.Noodle.Genetics {
+    enum MutationKind {
+        Substitution,
+        Insertion,
+        Deletion
+    }
+
+    enum SequenceKind {
+        DNA,
+        RNA
+    }
+
+    struct MutationRecord {
+        kind: MutationKind,
+        position: i64,
+        before: string,
+        after: string,
+        description: string,
+        is_synthetic: bool
+    }
+
+    struct MutationResult {
+        original_sequence: string,
+        mutated_sequence: string,
+        mutation: MutationRecord
+    }
+
+    struct OrganSystemInfo {
+        name: string,
+        primary_function: string,
+        major_structures: string
+    }
+}
