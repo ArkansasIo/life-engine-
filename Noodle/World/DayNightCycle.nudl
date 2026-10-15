@@ -1,0 +1,37 @@
+module LifeEngine.Noodle.World.DayNightCycle {
+
+    struct DayNightCycle {
+        day_length_seconds: f64,
+        elapsed_seconds: f64,
+        time_of_day: f64,
+        day_number: i64
+    }
+
+    fn create(day_length_seconds: f64) -> Result<DayNightCycle, string> {
+        if day_length_seconds <= 0.0 || day_length_seconds.is_nan() {
+            return Err("Day length must be finite and positive.")
+        }
+        return Ok(DayNightCycle {
+            day_length_seconds: day_length_seconds,
+            elapsed_seconds: 0.0,
+            time_of_day: 0.0,
+            day_number: 0
+        })
+    }
+
+    fn advance(cycle: DayNightCycle, delta_seconds: f64) -> Result<DayNightCycle, string> {
+        if delta_seconds < 0.0 || delta_seconds.is_nan() {
+            return Err("Time delta must be finite and non-negative.")
+        }
+        cycle.elapsed_seconds = cycle.elapsed_seconds + delta_seconds
+        let full_days: f64 = cycle.elapsed_seconds / cycle.day_length_seconds
+        cycle.day_number = full_days.floor() as i64
+        cycle.time_of_day = (cycle.elapsed_seconds % cycle.day_length_seconds) / cycle.day_length_seconds
+        return Ok(cycle)
+    }
+
+    fn is_day(cycle: DayNightCycle, daylight_fraction: f64) -> bool {
+        let normalized: f64 = cycle.time_of_day
+        return normalized < daylight_fraction
+    }
+}
