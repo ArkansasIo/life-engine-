@@ -31,3 +31,9 @@ jobs:
         run: build/noodle/noodle run Noodle/Examples/hello.nudl
       - name: Check LifeEngine smoke program
         run: build/noodle/noodle check Noodle/Examples/lifeengine-smoke.nudl
+      - name: Upload executable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lifeengine-noodle-linux-x64
+          path: build/noodle/noodle
+          if-no-files-found: error
