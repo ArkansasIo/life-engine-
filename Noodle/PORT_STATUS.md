@@ -14,6 +14,13 @@ This is a behavioral migration, not a file-extension conversion. The repository 
 - `Noodle/Ai/Difficulty.nudl` — starter difficulty profiles; partial, constants must be reconciled with C#.
 - `Noodle/Configuration/ConfigDefaults.nudl` — core simulation defaults; partial, not a complete configuration system.
 - `Noodle/Scripting/Lexer.nudl` — token/error contract only; not a complete lexer.
+- `Noodle/Biology/Organism.nudl`, `Taxonomy.nudl`, `Biomes.nudl` — starter data models/validation; partial.
+- `Noodle/World/WorldMap.nudl` — coordinate/map-cell contracts; partial.
+- `Noodle/Wolf/WolfLogic.nudl` — starter action-selection heuristic; partial and not equivalent to the C# wolf AI.
+- `Noodle/Talents/TalentTree.nudl` — prerequisite/cost check; partial.
+- `Noodle/Ai/CellAi.nudl` — cellular-rule decision helper; partial.
+- `Noodle/Scripting/Values.nudl` and `Parser.nudl` — runtime value and AST contracts; parser is not implemented.
+- `Noodle/Data/Database.nudl` and `Noodle/Host/README.md` — host adapter contracts/notes only, not working providers.
 - Existing genetics files — initial synthetic mutation port, not compiler-verified.
 
 ## Still required
