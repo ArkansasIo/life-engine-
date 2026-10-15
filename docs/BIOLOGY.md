@@ -417,3 +417,8 @@ every base.
 The gap between this and a working ecosystem is the roadmap's first item: put
 `Organism`s on grid cells, give them a cell list, let them grow, compete and
 inherit a genome.
+
+
+## Human biology and mutation extension
+
+The `LifeEngine.Biology.Genetics` namespace adds `HumanBiologyCatalog`, `SequenceValidator`, and `MutationEngine`. The catalogue is a concise educational index of organ systems. The mutation engine operates on supplied DNA/RNA strings and labels outputs as synthetic; it does not infer pathogenicity, phenotype, or clinical significance. See [HUMAN_BIOLOGY_MUTATION.md](HUMAN_BIOLOGY_MUTATION.md) for API examples, coordinate conventions, build instructions, and data provenance requirements.
