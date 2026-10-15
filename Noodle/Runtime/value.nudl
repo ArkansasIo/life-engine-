@@ -1,0 +1,24 @@
+module runtime.value;
+
+schema Value {
+    kind: string required;
+    boolean_value: bool;
+    number_value: number;
+    text_value: string;
+}
+
+fn null_value() -> Value {
+    return Value { kind: "null", boolean_value: false, number_value: 0, text_value: "" };
+}
+
+fn boolean_value(value: bool) -> Value {
+    return Value { kind: "bool", boolean_value: value, number_value: 0, text_value: "" };
+}
+
+fn number_value(value: number) -> Value {
+    return Value { kind: "number", boolean_value: false, number_value: value, text_value: "" };
+}
+
+fn text_value(value: string) -> Value {
+    return Value { kind: "string", boolean_value: false, number_value: 0, text_value: value };
+}
