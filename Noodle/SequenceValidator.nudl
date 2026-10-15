@@ -1,0 +1,34 @@
+module LifeEngine.Noodle.Genetics {
+    fn normalize_sequence(sequence: string) -> string {
+        let result: string = ""
+        for character in sequence.characters() {
+            let base: string = character.to_uppercase()
+            if base.is_whitespace() || base == "-" {
+                continue
+            }
+            result = result + base
+        }
+        return result
+    }
+
+    fn is_valid_sequence(sequence: string, kind: SequenceKind) -> bool {
+        let normalized: string = normalize_sequence(sequence)
+        let alphabet: string = if kind == SequenceKind.DNA { "ACGTN" } else { "ACGUN" }
+        if normalized.length() == 0 {
+            return false
+        }
+        for base in normalized.characters() {
+            if !alphabet.contains(base) {
+                return false
+            }
+        }
+        return true
+    }
+
+    fn require_valid_sequence(sequence: string, kind: SequenceKind) -> Result<string, string> {
+        if !is_valid_sequence(sequence, kind) {
+            return Err("Sequence contains invalid or no bases for the selected molecule type.")
+        }
+        return Ok(normalize_sequence(sequence))
+    }
+}
