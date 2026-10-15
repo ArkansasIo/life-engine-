@@ -1,0 +1,60 @@
+module LifeEngine.Noodle.Attributes {
+
+    enum AttributeKind {
+        Strength, Dexterity, Constitution, Intelligence,
+        Perception, Presence, Willpower, Speed
+    }
+
+    struct AttributeScore {
+        kind: AttributeKind,
+        base: i64,
+        trained: i64,
+        progress: f64,
+        training_rate: f64,
+        ceiling: i64
+    }
+
+    fn create(kind: AttributeKind, base_score: i64) -> AttributeScore {
+        return AttributeScore {
+            kind: kind, base: base_score, trained: 0,
+            progress: 0.0, training_rate: 1.0, ceiling: 30
+        }
+    }
+
+    fn score(attribute: AttributeScore) -> i64 {
+        return attribute.base + attribute.trained
+    }
+
+    fn bonus(attribute: AttributeScore) -> i64 {
+        // Preserve C# integer division semantics for ordinary positive scores.
+        return ((score(attribute) - 10) / 2) as i64
+    }
+
+    fn grade(attribute: AttributeScore) -> string {
+        let value: i64 = score(attribute)
+        if value >= 20 { return "A+" }
+        if value >= 18 { return "A" }
+        if value >= 16 { return "B+" }
+        if value >= 14 { return "B" }
+        if value >= 12 { return "C+" }
+        if value >= 10 { return "C" }
+        if value >= 8 { return "D+" }
+        if value >= 6 { return "D" }
+        if value >= 4 { return "E" }
+        return "F"
+    }
+
+    fn train(attribute: AttributeScore, effort: f64) -> Result<AttributeScore, string> {
+        if effort < 0.0 || effort.is_nan() {
+            return Err("Training effort must be finite and non-negative.")
+        }
+        if score(attribute) >= attribute.ceiling { return Ok(attribute) }
+        attribute.progress = attribute.progress + effort * attribute.training_rate
+        while attribute.progress >= 1.0 && score(attribute) < attribute.ceiling {
+            attribute.trained = attribute.trained + 1
+            attribute.progress = attribute.progress - 1.0
+        }
+        if score(attribute) >= attribute.ceiling { attribute.progress = 0.0 }
+        return Ok(attribute)
+    }
+}
