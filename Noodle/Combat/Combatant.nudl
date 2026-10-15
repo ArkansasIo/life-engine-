@@ -1,0 +1,22 @@
+module LifeEngine.Noodle.Combat.Combatant {
+ struct Combatant { id: string, name: string, health: f64, max_health: f64, attack: f64, defense: f64, speed: f64, alive: bool }
+ fn validate(unit: Combatant) -> Result<Combatant, string> {
+  if unit.id.length() == 0 || unit.name.length() == 0 { return Err("Combatant ID and name are required.") }
+  if unit.max_health <= 0.0 || unit.health < 0.0 || unit.health > unit.max_health { return Err("Health must be within [0, max_health].") }
+  if unit.attack < 0.0 || unit.defense < 0.0 || unit.speed < 0.0 { return Err("Combat statistics cannot be negative.") }
+  return Ok(unit)
+ }
+ fn apply_damage(unit: Combatant, raw_damage: f64) -> Result<Combatant, string> {
+  if raw_damage < 0.0 || raw_damage.is_nan() { return Err("Damage must be finite and non-negative.") }
+  if !unit.alive { return Ok(unit) }
+  let actual: f64 = max(0.0, raw_damage - unit.defense)
+  unit.health = max(0.0, unit.health - actual)
+  unit.alive = unit.health > 0.0
+  return Ok(unit)
+ }
+ fn heal(unit: Combatant, amount: f64) -> Result<Combatant, string> {
+  if amount < 0.0 || amount.is_nan() { return Err("Healing must be finite and non-negative.") }
+  if unit.alive { unit.health = min(unit.max_health, unit.health + amount) }
+  return Ok(unit)
+ }
+}
