@@ -613,3 +613,8 @@ LifeEngine/
 ## Human biology and mutation simulation
 
 LifeEngine now includes an educational human organ-system catalogue and a synthetic DNA/RNA mutation simulator in `LifeEngine.Biology.Genetics`. It supports sequence validation and seeded substitution, insertion, deletion, and per-base substitution-trial experiments. These are software simulation tools, not clinically validated mutation-rate or variant-interpretation models. See [Human Biology and Mutation](docs/HUMAN_BIOLOGY_MUTATION.md) for usage, limitations, and the accompanying MySQL schema.
+
+
+## NUDL / Noodle source port
+
+A parallel NUDL-language source port of the human biology and synthetic mutation module is available in [`Noodle/`](Noodle/README.md). It contains the organ-system catalogue, sequence validation, mutation models, mutation engine, and a usage example. These `.nudl` files are reference source and have not yet been compiled in this repository; the C# version remains the executable application integration.
