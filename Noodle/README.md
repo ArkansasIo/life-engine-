@@ -9,6 +9,7 @@ This folder is the additive NUDL migration area for LifeEngine. It contains the 
 - `SequenceValidator.nudl` — DNA/RNA sequence normalization and alphabet validation.
 - `MutationEngine.nudl` — seeded mutation operations and per-base substitution trials.
 - `examples.nudl` — small usage example.
+- `Core/`, `Attributes/`, `Biology/`, `Ecosystem/`, `World/`, `Combat/`, `Ai/`, `Wolf/`, `Talents/`, `Configuration/`, `Scripting/`, `Data/`, and `Host/` — initial subsystem ports and migration contracts; see `PORT_STATUS.md` for exact limitations.
 
 ## Port coverage
 
