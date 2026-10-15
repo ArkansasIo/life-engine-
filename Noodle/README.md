@@ -1,6 +1,6 @@
 # LifeEngine — Noodle / NUDL Source Port
 
-This folder contains a NUDL-language port of the initial human-biology and synthetic mutation module. It sits alongside the existing C# implementation under `Sources/Biology/Genetics/`; it does not replace or alter the C# build.
+This folder is the additive NUDL migration area for LifeEngine. It contains the initial human-biology/mutation port plus starter modules for simulation, attributes, ecosystem, weather/time, combat, AI difficulty, configuration defaults, and scripting contracts. The complete C# implementation remains under `Sources/` as the behavioral reference; the Noodle folder is not yet a complete replacement.
 
 ## Files
 
@@ -9,6 +9,12 @@ This folder contains a NUDL-language port of the initial human-biology and synth
 - `SequenceValidator.nudl` — DNA/RNA sequence normalization and alphabet validation.
 - `MutationEngine.nudl` — seeded mutation operations and per-base substitution trials.
 - `examples.nudl` — small usage example.
+
+## Port coverage
+
+- `PORT_MANIFEST.md` maps all 66 C# source files to intended Noodle destinations.
+- `PORT_STATUS.md` distinguishes starter/partial modules from the work still outstanding.
+- These modules are initial translations and modeling passes, not a claim that every C# method has been ported.
 
 ## Language status
 
