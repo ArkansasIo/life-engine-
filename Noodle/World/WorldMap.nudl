@@ -1,0 +1,11 @@
+module LifeEngine.Noodle.World.WorldMap {
+ struct Point2 { x: f64, y: f64 }
+ struct MapCell { x: i64, y: i64, elevation_m: f64, temperature_c: f64, moisture: f64, biome_id: string }
+ struct WorldMap { width: i64, height: i64, cells: List<MapCell> }
+ fn validate_dimensions(width: i64, height: i64) -> Result<bool, string> {
+  if width <= 0 || height <= 0 { return Err("Map dimensions must be positive.") }
+  return Ok(true)
+ }
+ fn cell_index(width: i64, x: i64, y: i64) -> i64 { return y * width + x }
+ fn contains(width: i64, height: i64, x: i64, y: i64) -> bool { return x >= 0 && y >= 0 && x < width && y < height }
+}
