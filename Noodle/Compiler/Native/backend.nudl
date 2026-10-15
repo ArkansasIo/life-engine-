@@ -1,0 +1,7 @@
+module compiler.backend;
+
+fn emit_cpp(module: ModuleIR) -> string {
+    // The verified bootstrap currently supplies the C++ emitter. This Noodle
+    // implementation remains a staged port until string/array/IO APIs exist.
+    return "";
+}
