@@ -1,0 +1,117 @@
+module LifeEngine.Noodle.Genetics {
+    struct MutationEngine {
+        seed: u64,
+        state: u64
+    }
+
+    impl MutationEngine {
+        fn new(seed: u64) -> MutationEngine {
+            return MutationEngine { seed: seed, state: seed }
+        }
+
+        // SplitMix64-style deterministic generator for reproducible simulation.
+        // This is not cryptographic randomness.
+        fn next_u64() -> u64 {
+            self.state = self.state + 0x9E3779B97F4A7C15
+            let z: u64 = self.state
+            let a: u64 = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9
+            let b: u64 = (a ^ (a >> 27)) * 0x94D049BB133111EB
+            return b ^ (b >> 31)
+        }
+
+        fn pick_base(kind: SequenceKind) -> string {
+            let alphabet: string = if kind == SequenceKind.DNA { "ACGT" } else { "ACGU" }
+            let index: usize = (self.next_u64() % alphabet.length() as u64) as usize
+            return alphabet[index]
+        }
+
+        fn pick_alternative(current: string, kind: SequenceKind) -> string {
+            let mut candidate: string = self.pick_base(kind)
+            while candidate == current {
+                candidate = self.pick_base(kind)
+            }
+            return candidate
+        }
+
+        fn apply_one(sequence: string, kind: SequenceKind, mutation_kind: MutationKind) -> Result<MutationResult, string> {
+            let original: string = match require_valid_sequence(sequence, kind) {
+                Ok(value) => value,
+                Err(message) => return Err(message)
+            }
+            if original.length() == 0 {
+                return Err("Sequence must not be empty.")
+            }
+            let position: usize = (self.next_u64() % original.length() as u64) as usize
+            let before: string = original[position]
+            let mut after: string = ""
+            let mut mutated: string = original
+
+            match mutation_kind {
+                MutationKind.Substitution => {
+                    after = self.pick_alternative(before, kind)
+                    mutated = original.replace_at(position, after)
+                }
+                MutationKind.Insertion => {
+                    after = self.pick_base(kind)
+                    mutated = original.insert_at(position, after)
+                }
+                MutationKind.Deletion => {
+                    after = ""
+                    mutated = original.remove_at(position)
+                }
+            }
+
+            let event: MutationRecord = MutationRecord {
+                kind: mutation_kind,
+                position: position as i64,
+                before: before,
+                after: after,
+                description: "Synthetic single-event mutation; biological effect not inferred." ,
+                is_synthetic: true
+            }
+            return Ok(MutationResult { original_sequence: original, mutated_sequence: mutated, mutation: event })
+        }
+
+        fn apply_substitution_trials(sequence: string, kind: SequenceKind, probability: f64) -> Result<MutationResult, string> {
+            if probability < 0.0 || probability > 1.0 || probability.is_nan() {
+                return Err("Probability must be between zero and one.")
+            }
+            let original: string = match require_valid_sequence(sequence, kind) {
+                Ok(value) => value,
+                Err(message) => return Err(message)
+            }
+            let mut output: string = ""
+            let mut first_position: i64 = -1
+            let mut first_before: string = ""
+            let mut first_after: string = ""
+            let mut changes: i64 = 0
+            for (index, base) in original.characters().enumerate() {
+                if self.next_unit_f64() < probability {
+                    let alternate: string = self.pick_alternative(base, kind)
+                    output = output + alternate
+                    if first_position < 0 {
+                        first_position = index as i64
+                        first_before = base
+                        first_after = alternate
+                    }
+                    changes = changes + 1
+                } else {
+                    output = output + base
+                }
+            }
+            let event: MutationRecord = MutationRecord {
+                kind: MutationKind.Substitution,
+                position: if first_position < 0 { 0 } else { first_position },
+                before: first_before,
+                after: first_after,
+                description: "Per-base Bernoulli trials; total changes=" + changes.to_string() + ".",
+                is_synthetic: true
+            }
+            return Ok(MutationResult { original_sequence: original, mutated_sequence: output, mutation: event })
+        }
+
+        fn next_unit_f64() -> f64 {
+            return (self.next_u64() >> 11) as f64 / 9007199254740992.0
+        }
+    }
+}
