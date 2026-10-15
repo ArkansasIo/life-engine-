@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Biology/NucleicAcid.cs
+// Scope: DNA/RNA alphabets, complements and validation.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Biology.NucleicAcid;
+
+schema NucleicAcidPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> NucleicAcidPortStatus {
+    return NucleicAcidPortStatus {
+        source: "Sources/Biology/NucleicAcid.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: DNA/RNA alphabets, complements and validation.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

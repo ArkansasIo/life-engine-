@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Biology/Enums.cs
+// Scope: taxonomy ranks, domains, kingdoms and animal classes.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Biology.Enums;
+
+schema BiologyEnumsPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> BiologyEnumsPortStatus {
+    return BiologyEnumsPortStatus {
+        source: "Sources/Biology/Enums.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: taxonomy ranks, domains, kingdoms and animal classes.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Configuration/Config.cs
+// Scope: world dimensions, seed, rules and speed.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Configuration.Config;
+
+schema EngineConfigPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> EngineConfigPortStatus {
+    return EngineConfigPortStatus {
+        source: "Sources/Configuration/Config.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: world dimensions, seed, rules and speed.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

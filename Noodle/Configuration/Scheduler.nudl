@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Configuration/Scheduler.cs
+// Scope: fixed-step scheduling and pause/resume.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Configuration.Scheduler;
+
+schema SchedulerPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> SchedulerPortStatus {
+    return SchedulerPortStatus {
+        source: "Sources/Configuration/Scheduler.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: fixed-step scheduling and pause/resume.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Host/Program.cs
+// Scope: entry point host contract.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Host.Program;
+
+schema LifeEngineProgramPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> LifeEngineProgramPortStatus {
+    return LifeEngineProgramPortStatus {
+        source: "Sources/Host/Program.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: entry point host contract.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

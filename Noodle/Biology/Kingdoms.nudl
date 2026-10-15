@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Biology/Kingdoms.cs
+// Scope: plant, fungi and protist traits.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Biology.Kingdoms;
+
+schema EukaryotePortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> EukaryotePortStatus {
+    return EukaryotePortStatus {
+        source: "Sources/Biology/Kingdoms.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: plant, fungi and protist traits.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

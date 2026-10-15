@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Host/Gui/ToolsPanel.cs
+// Scope: simulation inspection commands.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Host.Gui.ToolsPanel;
+
+schema ToolsPanelPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> ToolsPanelPortStatus {
+    return ToolsPanelPortStatus {
+        source: "Sources/Host/Gui/ToolsPanel.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: simulation inspection commands.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

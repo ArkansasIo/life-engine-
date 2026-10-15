@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Combat/BattleLog.cs
+// Scope: ordered combat events and replay records.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Combat.BattleLog;
+
+schema BattleLogPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> BattleLogPortStatus {
+    return BattleLogPortStatus {
+        source: "Sources/Combat/BattleLog.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: ordered combat events and replay records.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

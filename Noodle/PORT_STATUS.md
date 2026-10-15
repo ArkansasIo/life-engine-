@@ -1,38 +1,20 @@
-# Noodle port status
+# Noodle Life Engine — Migration Status
 
-This is a behavioral migration, not a file-extension conversion. The repository contains 66 C# source files (approximately 1.14 MB), including platform-dependent UI and database adapters. Files marked partial are not complete translations.
+A path-mapped Noodle source file has been generated for every C# source entry in `Sources/`, including host adapter contracts for WinForms, settings/resources, database/export, update networking, and GUI drawing. Existing Noodle modules contain partial algorithms; newly mirrored modules with `PortStatus` schemas are migration contracts, not completed translations.
 
-## Initial modules added
+## Runnable targets
 
-- `Noodle/Core/LifeGame.nudl` — cellular automaton state and stepping; partial, compiler/runtime APIs need validation.
-- `Noodle/Attributes/Attributes.nudl` — attribute score, grade, training; partial, compare against the full C# class.
-- `Noodle/World/DayNightCycle.nudl` — normalized time/day model; partial.
-- `Noodle/World/Weather.nudl` — weather state and validation; partial.
-- `Noodle/Ecosystem/Ecosystem.nudl` — population validation and logistic growth helper; partial, not a full ecosystem port.
-- `Noodle/Combat/Combatant.nudl` — simplified combatant state, damage, and healing; partial.
-- `Noodle/Combat/CombatEngine.nudl` — basic attack resolution; partial, not equivalent to the complete C# combat pipeline.
-- `Noodle/Ai/Difficulty.nudl` — starter difficulty profiles; partial, constants must be reconciled with C#.
-- `Noodle/Configuration/ConfigDefaults.nudl` — core simulation defaults; partial, not a complete configuration system.
-- `Noodle/Scripting/Lexer.nudl` — token/error contract only; not a complete lexer.
-- `Noodle/Biology/Organism.nudl`, `Taxonomy.nudl`, `Biomes.nudl` — starter data models/validation; partial.
-- `Noodle/World/WorldMap.nudl` — coordinate/map-cell contracts; partial.
-- `Noodle/Wolf/WolfLogic.nudl` — starter action-selection heuristic; partial and not equivalent to the C# wolf AI.
-- `Noodle/Talents/TalentTree.nudl` — prerequisite/cost check; partial.
-- `Noodle/Ai/CellAi.nudl` — cellular-rule decision helper; partial.
-- `Noodle/Scripting/Values.nudl` and `Parser.nudl` — runtime value and AST contracts; parser is not implemented.
-- `Noodle/Data/Database.nudl` and `Noodle/Host/README.md` — host adapter contracts/notes only, not working providers.
-- Existing genetics files — initial synthetic mutation port, not compiler-verified.
+- `Noodle/BootstrapCpp/` builds a C++23 bootstrap CLI on compatible toolchains; it supports only a subset of NUDL.
+- `docs/noodle.html` runs a browser implementation of a limited Noodle subset.
+- `docs/life-engine.html` is the browser Life Engine application. Its UI and host simulation adapter are JavaScript because the current Noodle runtime cannot yet compile or execute the complete project.
+- The cellular automaton is the primary executable-domain migration; biology, combat, scripting, configuration, database, and host UI modules need behavior-parity work.
 
-## Still required
+## Required before claiming a full native Noodle port
 
-Translate and review all 66 source modules, including animal taxonomy/catalogues, biosphere/biomes/world map, wolf behavior and packs, complete combat effects/bestiary/logging, AI decision logic, configuration persistence/scheduler/updater, database and export implementations, full lexer/parser/interpreter/standard library, talents, GUI host interfaces, entry point, and tests/tools.
+1. Implement arrays/indexing, mutable records, modules/imports, standard library, type checking, and host I/O APIs in the compiler/runtime.
+2. Compile every Noodle module and resolve all diagnostics.
+3. Port C# tests and compare seeded simulation/combat/ecology results against the reference.
+4. Verify desktop/browser host adapters and persistence/export paths.
+5. Make the Noodle-native compiler compile itself and run conformance tests.
 
-WinForms, OLE DB, file-system, and image-resource behavior need explicit Noodle host interfaces or a compatible runtime; NUDL source alone cannot replace those operating-system integrations.
-
-## Validation gates
-
-1. Confirm the intended NUDL 0.3 grammar and standard-library API.
-2. Compile every `.nudl` file.
-3. Port C# tests and add behavior-parity cases for simulation, combat, population, configuration, and script evaluation.
-4. Compare deterministic seeds and edge cases against the C# reference.
-5. Do not remove or replace C# sources until Noodle builds and behavior parity passes.
+C# sources remain intact as the behavioral reference. No source is marked runtime-verified unless tested.

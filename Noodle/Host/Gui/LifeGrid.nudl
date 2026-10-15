@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Host/Gui/LifeGrid.cs
+// Scope: cell grid view state.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Host.Gui.LifeGrid;
+
+schema LifeGridViewModelPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> LifeGridViewModelPortStatus {
+    return LifeGridViewModelPortStatus {
+        source: "Sources/Host/Gui/LifeGrid.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: cell grid view state.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

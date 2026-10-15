@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Host/Gui/AppContext.cs
+// Scope: application lifetime and service registry.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Host.Gui.AppContext;
+
+schema AppContextPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> AppContextPortStatus {
+    return AppContextPortStatus {
+        source: "Sources/Host/Gui/AppContext.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: application lifetime and service registry.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

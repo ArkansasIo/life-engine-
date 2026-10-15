@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Host/Gui/WolfPanel.cs
+// Scope: wolf pack dashboard view model.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Host.Gui.WolfPanel;
+
+schema WolfPanelPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> WolfPanelPortStatus {
+    return WolfPanelPortStatus {
+        source: "Sources/Host/Gui/WolfPanel.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: wolf pack dashboard view model.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

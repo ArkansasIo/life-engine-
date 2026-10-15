@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Scripting/ScriptHost.cs
+// Scope: host API capability boundary.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Scripting.ScriptHost;
+
+schema ScriptHostPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> ScriptHostPortStatus {
+    return ScriptHostPortStatus {
+        source: "Sources/Scripting/ScriptHost.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: host API capability boundary.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

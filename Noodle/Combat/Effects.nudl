@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Combat/Effects.cs
+// Scope: timed status effects and stacking policy.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Combat.Effects;
+
+schema CombatEffectPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> CombatEffectPortStatus {
+    return CombatEffectPortStatus {
+        source: "Sources/Combat/Effects.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: timed status effects and stacking policy.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.

@@ -1,0 +1,23 @@
+// Life Engine Noodle port target.
+// C# reference: Sources/Configuration/UpdateSystem.cs
+// Scope: version comparison and update metadata.
+// Status: migration contract scaffold; behavior parity and native compiler validation required.
+module LifeEngine.Noodle.Configuration.UpdateSystem;
+
+schema UpdateSystemPortStatus {
+    source: string required;
+    status: string required;
+    runtime_verified: boolean required;
+}
+
+fn port_status() -> UpdateSystemPortStatus {
+    return UpdateSystemPortStatus {
+        source: "Sources/Configuration/UpdateSystem.cs",
+        status: "contract scaffold; parity review required",
+        runtime_verified: false
+    };
+}
+
+// Contract: version comparison and update metadata.
+// Keep GUI, filesystem, network, database drivers and binary resources behind host adapters.
+// Preserve the C# reference until parity tests pass.
