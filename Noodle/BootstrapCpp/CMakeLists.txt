@@ -22,3 +22,5 @@ add_test(NAME noodle_interpreter_test COMMAND noodle_interpreter_test)
 add_executable(noodle_codegen_test tests/codegen_test.cpp)
 target_link_libraries(noodle_codegen_test PRIVATE noodle_frontend)
 add_test(NAME noodle_codegen_test COMMAND noodle_codegen_test)
+
+install(TARGETS noodle nudlc RUNTIME DESTINATION bin)
