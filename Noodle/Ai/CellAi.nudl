@@ -1,0 +1,11 @@
+module LifeEngine.Noodle.Ai.CellAi {
+ enum CellDecision { StayAlive, BecomeAlive, Die, StayDead }
+ struct CellNeighborhood { alive_neighbors: i64, current_alive: bool, survival_counts: List<i64>, birth_counts: List<i64> }
+ fn decide(neighborhood: CellNeighborhood) -> CellDecision {
+  if neighborhood.alive_neighbors < 0 || neighborhood.alive_neighbors > 8 { return if neighborhood.current_alive { CellDecision.Die } else { CellDecision.StayDead } }
+  if neighborhood.current_alive {
+   return if neighborhood.survival_counts.contains(neighborhood.alive_neighbors) { CellDecision.StayAlive } else { CellDecision.Die }
+  }
+  return if neighborhood.birth_counts.contains(neighborhood.alive_neighbors) { CellDecision.BecomeAlive } else { CellDecision.StayDead }
+ }
+}
