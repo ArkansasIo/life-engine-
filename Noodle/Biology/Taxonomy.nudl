@@ -1,0 +1,9 @@
+module LifeEngine.Noodle.Biology.Taxonomy {
+ struct TaxonomyRecord { domain: string, kingdom: string, phylum: string, class_name: string, order_name: string, family: string, genus: string, species: string }
+ fn validate(record: TaxonomyRecord) -> Result<TaxonomyRecord, string> {
+  if record.domain.length() == 0 || record.kingdom.length() == 0 { return Err("Domain and kingdom are required taxonomy ranks.") }
+  if record.species.length() == 0 { return Err("Species label is required.") }
+  return Ok(record)
+ }
+ fn scientific_name(record: TaxonomyRecord) -> string { return record.genus + " " + record.species }
+}
