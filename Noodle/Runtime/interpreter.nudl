@@ -1,0 +1,7 @@
+module runtime.interpreter;
+
+fn execute(program: Program) -> Value {
+    // Planned evaluator: lexical environments, typed runtime values, function
+    // calls, branch/loop execution, and structured runtime diagnostics.
+    return runtime.value.null_value();
+}
