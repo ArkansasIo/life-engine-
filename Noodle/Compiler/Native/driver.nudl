@@ -1,0 +1,12 @@
+module compiler.driver;
+
+fn compile_source(source: string) -> string {
+    let tokens = compiler.lexer.lex(source);
+    let program = compiler.parser.parse_program(tokens);
+    if (!compiler.semantic.analyze(program)) {
+        return "";
+    }
+    let ir = compiler.ir.lower(program);
+    let optimized = compiler.optimizer.optimize(ir);
+    return compiler.backend.emit_cpp(optimized);
+}
