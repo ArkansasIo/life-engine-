@@ -1,0 +1,27 @@
+module LifeEngine.Noodle.World.Weather {
+
+    enum WeatherKind {
+        Clear, Cloudy, Rain, Snow, Storm, Fog, Wind
+    }
+
+    struct WeatherState {
+        kind: WeatherKind,
+        temperature_c: f64,
+        humidity: f64,
+        wind_speed_mps: f64,
+        precipitation_mm_per_hour: f64
+    }
+
+    fn validate(state: WeatherState) -> Result<WeatherState, string> {
+        if state.temperature_c.is_nan() || state.humidity < 0.0 || state.humidity > 1.0 {
+            return Err("Temperature must be numeric and humidity must be in [0, 1].")
+        }
+        if state.wind_speed_mps < 0.0 || state.precipitation_mm_per_hour < 0.0 {
+            return Err("Wind and precipitation cannot be negative.")
+        }
+        if state.wind_speed_mps.is_nan() || state.precipitation_mm_per_hour.is_nan() {
+            return Err("Wind and precipitation must be numeric.")
+        }
+        return Ok(state)
+    }
+}
