@@ -1,0 +1,7 @@
+module LifeEngine.Noodle.Scripting.Parser {
+ enum ExpressionKind { Literal, Identifier, Unary, Binary, Call, Member, Index, ListLiteral }
+ struct Expression { kind: ExpressionKind, text: string, children: List<Expression>, line: i64, column: i64 }
+ struct ParseError { message: string, line: i64, column: i64 }
+ // Contract only. The full C# parser supports the existing LifeEngine script grammar;
+ // grammar productions, precedence, indentation blocks, and recovery remain unported.
+}
