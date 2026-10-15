@@ -1,0 +1,40 @@
+module LifeEngine.Noodle.Ecosystem {
+
+    struct PopulationRecord {
+        species_id: string,
+        count: i64,
+        birth_rate: f64,
+        mortality_rate: f64
+    }
+
+    struct EcosystemState {
+        populations: List<PopulationRecord>,
+        resources: f64,
+        carrying_capacity: f64,
+        elapsed_days: f64
+    }
+
+    fn validate_population(population: PopulationRecord) -> Result<PopulationRecord, string> {
+        if population.species_id.length() == 0 {
+            return Err("Species identifier cannot be empty.")
+        }
+        if population.count < 0 || population.birth_rate < 0.0 || population.mortality_rate < 0.0 {
+            return Err("Counts and rates must be non-negative.")
+        }
+        if population.birth_rate.is_nan() || population.mortality_rate.is_nan() {
+            return Err("Population rates must be finite.")
+        }
+        return Ok(population)
+    }
+
+    fn logistic_next(current: f64, intrinsic_rate: f64, capacity: f64, delta_time: f64) -> Result<f64, string> {
+        if current < 0.0 || capacity <= 0.0 || delta_time < 0.0 {
+            return Err("Population and time must be non-negative and capacity positive.")
+        }
+        if intrinsic_rate.is_nan() || current.is_nan() || capacity.is_nan() {
+            return Err("Model inputs must be numeric.")
+        }
+        let change: f64 = intrinsic_rate * current * (1.0 - current / capacity) * delta_time
+        return Ok(max(0.0, current + change))
+    }
+}
