@@ -1,0 +1,7 @@
+module compiler.optimizer;
+
+fn optimize(module: ModuleIR) -> ModuleIR {
+    // Planned passes: constant folding, dead-code elimination, and simple
+    // control-flow cleanup. Each pass will need semantic-preservation tests.
+    return module;
+}
