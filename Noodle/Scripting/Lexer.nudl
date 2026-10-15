@@ -1,0 +1,6 @@
+module LifeEngine.Noodle.Scripting.Lexer {
+ enum TokenKind { End, NewLine, Name, Number, String, Keyword, Operator, Comment }
+ struct Token { kind: TokenKind, text: string, number: f64, line: i64, column: i64 }
+ struct LexError { message: string, line: i64, column: i64 }
+ // Contract only: the C# lexer is indentation/newline-sensitive. Scanner, escapes, numeric grammar, and exact error locations remain to be translated and parity-tested.
+}
