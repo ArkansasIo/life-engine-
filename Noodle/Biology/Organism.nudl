@@ -1,0 +1,15 @@
+module LifeEngine.Noodle.Biology.Organism {
+ enum LifeState { Alive, Dormant, Dead }
+ struct Organism { id: string, species: string, age_days: f64, energy: f64, health: f64, max_health: f64, state: LifeState }
+ fn validate(value: Organism) -> Result<Organism, string> {
+  if value.id.length() == 0 || value.species.length() == 0 { return Err("Organism ID and species are required.") }
+  if value.age_days < 0.0 || value.energy < 0.0 || value.health < 0.0 || value.max_health <= 0.0 || value.health > value.max_health { return Err("Organism age, energy, and health are outside valid bounds.") }
+  return Ok(value)
+ }
+ fn consume_energy(value: Organism, amount: f64) -> Result<Organism, string> {
+  if amount < 0.0 || amount.is_nan() { return Err("Energy use must be finite and non-negative.") }
+  value.energy = max(0.0, value.energy - amount)
+  if value.energy == 0.0 && value.state == LifeState.Alive { value.state = LifeState.Dormant }
+  return Ok(value)
+ }
+}
