@@ -1,0 +1,12 @@
+module compiler.token;
+
+schema Token {
+    kind: string required;
+    lexeme: string;
+    line: integer required;
+    column: integer required;
+}
+
+fn make_token(kind: string, lexeme: string, line: integer, column: integer) -> Token {
+    return Token { kind: kind, lexeme: lexeme, line: line, column: column };
+}
