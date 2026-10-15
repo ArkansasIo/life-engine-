@@ -1,0 +1,21 @@
+module compiler.lexer;
+
+fn is_digit(character: string) -> bool {
+    return regex.is_match("^[0-9]$", character);
+}
+
+fn is_identifier_start(character: string) -> bool {
+    return regex.is_match("^[A-Za-z_]$", character);
+}
+
+fn is_identifier_continue(character: string) -> bool {
+    return regex.is_match("^[A-Za-z0-9_]$", character);
+}
+
+fn lex(source: string) -> array {
+    // Planned algorithm: scan UTF-8 code points, track line/column, emit a token
+    // for each identifier, number, string, punctuation and operator; skip spaces
+    // and comments; append a final End token. Full source iteration and mutable
+    // arrays require the complete Noodle runtime and are not executable yet.
+    return [];
+}
