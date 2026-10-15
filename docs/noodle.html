@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noodle Playground — Life Engine</title>
+<meta name="description" content="Run a browser-based preview of the Noodle language for Life Engine.">
+<style>
+:root{color-scheme:dark;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#080d18;color:#e6edf9}
+*{box-sizing:border-box}body{margin:0}header,main{max-width:1120px;margin:auto;padding:22px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #26344e}
+h1,h2,p{font-family:system-ui,sans-serif}h1{font-size:1.5rem;margin:0}p{line-height:1.5;color:#b8c7df}
+a{color:#8dc3ff}.tag{font:12px system-ui;border:1px solid #425675;border-radius:99px;padding:5px 10px;color:#bdd8ff}
+.layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:18px}
+.panel{background:#111a2b;border:1px solid #293a58;border-radius:12px;padding:16px;min-width:0}
+textarea{width:100%;min-height:340px;resize:vertical;background:#080e1b;color:#e8f0ff;border:1px solid #344865;border-radius:8px;padding:14px;font:14px/1.6 ui-monospace,monospace;tab-size:4}
+button,select{background:#19365a;color:#eaf3ff;border:1px solid #41628b;border-radius:7px;padding:9px 13px;font:inherit;cursor:pointer}
+button:hover{background:#244c7a}.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;min-height:140px;background:#080e1b;border:1px solid #263953;border-radius:8px;padding:12px;color:#b8f4cb}
+.small{font:13px/1.5 system-ui,sans-serif;color:#a9bad4}.warn{border-left:3px solid #d7a64b;padding-left:12px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}textarea{min-height:280px}}
+</style>
+</head>
+<body>
+<header><div><h1>Life Engine / Noodle Playground</h1><p style="margin:6px 0 0">A browser-based Noodle subset runner</p></div><span class="tag">Preview runtime · no server required</span></header>
+<main>
+<p>Write Noodle code and run it directly in this page. The runner supports the current bootstrap's small executable subset: functions, typed parameters and return values, <code>let</code>/<code>const</code>, arithmetic, comparisons, booleans, <code>if</code>/<code>else</code>, <code>while</code>, and <code>print(...)</code>.</p>
+<div class="layout">
+<section class="panel"><h2>Source (.nudl)</h2>
+<div class="toolbar"><select id="example" aria-label="Example"><option value="hello">Hello world</option><option value="life">Life Engine smoke test</option><option value="loop">Loop and condition</option></select><button id="load">Load example</button><button id="run">▶ Run Noodle</button><button id="clear">Clear output</button></div>
+<textarea id="source" spellcheck="false" aria-label="Noodle source code">fn main() -> i64 {
+    print("LifeEngine Noodle runtime is running.");
+    let answer: i64 = 40 + 2;
+    print(answer);
+    return 0;
+}</textarea>
+<p class="small">Tip: statements may end with semicolons. Entry point is <code>fn main() -> type { ... }</code>.</p>
+</section>
+<section class="panel"><h2>Console output</h2><pre id="output" aria-live="polite">Ready. Press “Run Noodle”.</pre><p id="status" class="small">Waiting for source.</p><h2>Runtime boundary</h2><p class="small warn">This page runs a JavaScript implementation of the supported Noodle subset. It does not run the compiled C++ executable, and it does not yet support the full Noodle-native compiler/runtime or every LifeEngine module.</p><p class="small"><a href="https://github.com/ArkansasIo/life-engine-/tree/master/Noodle">Browse Noodle source</a> · <a href="https://github.com/ArkansasIo/life-engine-/blob/master/Noodle/BUILD.md">Build native bootstrap</a> · <a href="./index.html">Life Engine home</a></p></section>
+</div>
+</main>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const examples = {
+hello: 'fn main() -> i64 {\n    print("LifeEngine Noodle runtime is running.");\n    let answer: i64 = 40 + 2;\n    print(answer);\n    return 0;\n}',
+life: 'fn main() -> i64 {\n    let rows: i64 = 10;\n    let columns: i64 = 10;\n    let cells: i64 = rows * columns;\n    print("LifeEngine Noodle smoke test");\n    print(cells);\n    return 0;\n}',
+loop: 'fn main() -> i64 {\n    let n: i64 = 1;\n    while (n <= 5) {\n        print(n);\n        n = n + 1;\n    }\n    if (n == 6) {\n        print("loop complete");\n    } else {\n        print("unexpected result");\n    }\n    return 0;\n}'
+};
+function tokenize(src) {
+ const out=[]; let i=0,line=1,col=1;
+ const push=(type,value)=>out.push({type,value,line,col});
+ while(i<src.length){
+  const c=src[i];
+  if(c===' '||c==='\t'||c==='\r'){i++;col++;continue}
+  if(c==='\n'){i++;line++;col=1;continue}
+  if(c==='/'&&src[i+1]==='/'){while(i<src.length&&src[i]!=='\n'){i++;col++}continue}
+  const startLine=line,startCol=col;
+  if(c==='"'||c==="'"){const quote=c; i++;col++;let s='';while(i<src.length&&src[i]!==quote){if(src[i]==='\\'){i++;col++;const e=src[i];s+=e==='n'?'\n':e==='t'?'\t':e||'';i++;col++;}else{if(src[i]==='\n')throw Error('Unterminated string at '+startLine+':'+startCol);s+=src[i++];col++}}if(src[i]!==quote)throw Error('Unterminated string at '+startLine+':'+startCol);i++;col++;out.push({type:'string',value:s,line:startLine,col:startCol});continue}
+  const number=src.slice(i).match(/^\d+(?:\.\d+)?/);
+  if(number){push('number',number[0]);i+=number[0].length;col+=number[0].length;continue}
+  const ident=src.slice(i).match(/^[A-Za-z_][A-Za-z0-9_]*/);
+  if(ident){push('id',ident[0]);i+=ident[0].length;col+=ident[0].length;continue}
+  const op=['->','==','!=','<=','>='].find(x=>src.startsWith(x,i));
+  if(op){push(op,op);i+=op.length;col+=op.length;continue}
+  if('{}()[],:;=+-*/%!<>'.includes(c)){push(c,c);i++;col++;continue}
+  throw Error('Unexpected character '+JSON.stringify(c)+' at '+line+':'+col);
+ }
+ out.push({type:'eof',value:'',line,col});return out;
+}
+function parse(src){
+ const t=tokenize(src);let p=0;const peek=()=>t[p], is=v=>peek().value===v;
+ const take=()=>t[p++];const need=v=>{if(!is(v))throw Error('Expected "'+v+'" at '+peek().line+':'+peek().col);return take()};
+ const ident=()=>{if(peek().type!=='id')throw Error('Expected identifier at '+peek().line+':'+peek().col);return take().value};
+ function type(){return ident()}
+ function primary(){
+  const x=peek();
+  if(x.type==='number'){take();return {k:'lit',v:Number(x.value)}}
+  if(x.type==='string'){take();return {k:'lit',v:x.value}}
+  if(is('true')||is('false')){take();return {k:'lit',v:x.value==='true'}}
+  if(is('null')){take();return {k:'lit',v:null}}
+  if(is('(')){take();const e=expr();need(')');return e}
+  if(is('[')){take();const a=[];if(!is(']')){do{a.push(expr());if(!is(','))break;take()}while(!is(']'))}need(']');return {k:'array',a}}
+  if(x.type==='id'){const n=take().value;if(is('(')){take();const a=[];if(!is(')')){do{a.push(expr());if(!is(','))break;take()}while(!is(')'))}need(')');return {k:'call',n,a}}return {k:'name',n}}
+  throw Error('Expected expression at '+x.line+':'+x.col);
+ }
+ function unary(){if(is('-')||is('!')){const op=take().value;return {k:'unary',op,e:unary()}}return primary()}
+ const prec={'==':2,'!=':2,'<':3,'<=':3,'>':3,'>=':3,'+':4,'-':4,'*':5,'/':5,'%':5};
+ function expr(min=1){let left=unary();while((prec[peek().value]||0)>=min){const op=take().value, pr=prec[op],right=expr(pr+1);left={k:'binary',op,l:left,r:right}}return left}
+ function block(){need('{');const s=[];while(!is('}')&&peek().type!=='eof')s.push(stmt());need('}');return s}
+ function stmt(){
+  if(is('let')||is('const')){const constant=take().value==='const',n=ident();let ty=null;if(is(':')){take();ty=type()}need('=');const e=expr();if(is(';'))take();return {k:'bind',n,e,constant,ty}}
+  if(is('return')){take();const e=expr();if(is(';'))take();return {k:'return',e}}
+  if(is('if')||is('while')){const k=take().value;need('(');const c=expr();need(')');const b=block();let alt=[];if(k==='if'&&is('else')){take();alt=block()}return {k,c,b,alt}}
+  if(peek().type==='id'&&t[p+1]&&t[p+1].value==='='){const n=take().value;take();const e=expr();if(is(';'))take();return {k:'assign',n,e}}
+  const e=expr();if(is(';'))take();return {k:'expr',e}
+ }
+ const funcs={};while(peek().type!=='eof'){need('fn');const name=ident();need('(');const params=[];if(!is(')')){do{const n=ident();need(':');params.push({n,ty:type()});if(!is(','))break;take()}while(!is(')'))}need(')');need('->');const ret=type();funcs[name]={params,ret,body:block()}}
+ if(!funcs.main)throw Error('Program must define fn main()');return funcs;
+}
+function execute(src){
+ const funcs=parse(src), output=[];let steps=0;
+ const stringify=v=>v===null?'null':Array.isArray(v)?'['+v.map(stringify).join(', ')+']':String(v);
+ const truth=v=>!!v;
+ function evalExpr(e,env){
+  if(++steps>100000)throw Error('Execution step limit exceeded (possible infinite loop).');
+  switch(e.k){
+   case 'lit':return e.v;
+   case 'array':return e.a.map(x=>evalExpr(x,env));
+   case 'name':if(e.n in env)return env[e.n];throw Error('Undefined name: '+e.n);
+   case 'unary':{const v=evalExpr(e.e,env);return e.op==='-'?-Number(v):!truth(v)}
+   case 'binary':{const l=evalExpr(e.l,env),r=evalExpr(e.r,env);switch(e.op){case '+':return typeof l==='string'&&typeof r==='string'?l+r:Number(l)+Number(r);case '-':return Number(l)-Number(r);case '*':return Number(l)*Number(r);case '/':return Number(l)/Number(r);case '%':return Number(l)%Number(r);case '==':return l===r;case '!=':return l!==r;case '<':return l<r;case '<=':return l<=r;case '>':return l>r;case '>=':return l>=r}break}
+   case 'call':if(e.n==='print'){e.a.forEach(a=>output.push(stringify(evalExpr(a,env))));return null}return call(e.n,e.a.map(a=>evalExpr(a,env)));
+  }
+  throw Error('Unsupported expression');
+ }
+ function runBlock(body,env){for(const s of body){const r=runStmt(s,env);if(r&&r.returned)return r}return null}
+ function runStmt(s,env){
+  if(++steps>100000)throw Error('Execution step limit exceeded (possible infinite loop).');
+  switch(s.k){
+   case 'bind':if(s.n in env)throw Error('Name already defined: '+s.n);env[s.n]=evalExpr(s.e,env);return null;
+   case 'assign':if(!(s.n in env))throw Error('Assignment to undefined name: '+s.n);env[s.n]=evalExpr(s.e,env);return null;
+   case 'expr':evalExpr(s.e,env);return null;
+   case 'return':return {returned:true,value:evalExpr(s.e,env)};
+   case 'if':return runBlock(truth(evalExpr(s.c,env))?s.b:s.alt,env);
+   case 'while':while(truth(evalExpr(s.c,env))){const r=runBlock(s.b,env);if(r&&r.returned)return r;if(++steps>100000)throw Error('Execution step limit exceeded (possible infinite loop).')}return null;
+  }
+ }
+ function call(name,args){const f=funcs[name];if(!f)throw Error('Unknown function: '+name);if(args.length!==f.params.length)throw Error('Wrong argument count for '+name);const env={};f.params.forEach((p,i)=>env[p.n]=args[i]);const r=runBlock(f.body,env);return r?r.value:null}
+ const result=call('main',[]);return {output:output.join('\n')||'(no output)',result,steps};
+}
+$('load').addEventListener('click',()=>{$('source').value=examples[$('example').value];$('status').textContent='Loaded '+$('example').selectedOptions[0].text+'.'});
+$('clear').addEventListener('click',()=>{$('output').textContent='';$('status').textContent='Output cleared.'});
+$('run').addEventListener('click',()=>{const start=performance.now();try{const r=execute($('source').value);$('output').textContent=r.output;$('status').textContent='Finished successfully · '+r.steps+' steps · '+(performance.now()-start).toFixed(2)+' ms · return '+String(r.result)}catch(e){$('output').textContent='Runtime error: '+e.message;$('status').textContent='Execution failed.'}});
+})();
+</script>
+</body>
+</html>
