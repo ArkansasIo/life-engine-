@@ -1,0 +1,25 @@
+module LifeEngine.Noodle.Biology {
+    const TYPICAL_HUMAN_DIPLOID_CHROMOSOMES: i64 = 46
+    const TYPICAL_HUMAN_AUTOSOME_PAIRS: i64 = 22
+
+    fn human_chromosome_reference_note() -> string {
+        return "Typical human somatic cells: 46 chromosomes (23 pairs); most gametes: 23. Exceptions exist, including aneuploidy and tissue-specific variation."
+    }
+
+    fn human_organ_systems() -> List<OrganSystemInfo> {
+        return [
+            OrganSystemInfo { name: "Integumentary", primary_function: "Barrier, temperature regulation and sensation", major_structures: "Skin, hair, nails and glands" },
+            OrganSystemInfo { name: "Skeletal", primary_function: "Support, protection, mineral storage and blood-cell formation", major_structures: "Bones, cartilage, ligaments and marrow" },
+            OrganSystemInfo { name: "Muscular", primary_function: "Movement, posture and heat production", major_structures: "Skeletal, cardiac and smooth muscle" },
+            OrganSystemInfo { name: "Nervous", primary_function: "Rapid signalling, sensory processing and control", major_structures: "Brain, spinal cord, peripheral nerves and sensory organs" },
+            OrganSystemInfo { name: "Endocrine", primary_function: "Hormonal signalling and regulation", major_structures: "Pituitary, thyroid, parathyroids, adrenals, pancreas and gonads" },
+            OrganSystemInfo { name: "Cardiovascular", primary_function: "Transport of gases, nutrients, wastes and signals", major_structures: "Heart, blood and blood vessels" },
+            OrganSystemInfo { name: "Lymphatic and immune", primary_function: "Fluid return and immune defence", major_structures: "Lymph vessels, nodes, spleen, thymus and immune cells" },
+            OrganSystemInfo { name: "Respiratory", primary_function: "Gas exchange and acid-base contribution", major_structures: "Airways, lungs, alveoli and diaphragm" },
+            OrganSystemInfo { name: "Digestive", primary_function: "Food processing and nutrient absorption", major_structures: "Mouth, oesophagus, stomach, intestines, liver, gallbladder and pancreas" },
+            OrganSystemInfo { name: "Urinary", primary_function: "Waste excretion and fluid/electrolyte balance", major_structures: "Kidneys, ureters, bladder and urethra" },
+            OrganSystemInfo { name: "Reproductive", primary_function: "Gamete production and reproduction", major_structures: "Ovaries and associated structures; testes and associated structures" },
+            OrganSystemInfo { name: "Hematologic", primary_function: "Oxygen transport, clotting and circulating defence", major_structures: "Blood cells, plasma, platelets and marrow" }
+        ]
+    }
+}
