@@ -1,0 +1,33 @@
+name: Noodle Bootstrap
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'Noodle/BootstrapCpp/**'
+      - 'Noodle/Compiler/**'
+      - 'Noodle/Runtime/**'
+      - 'Noodle/Examples/**'
+      - '.github/workflows/noodle-bootstrap.yml'
+  pull_request:
+    paths:
+      - 'Noodle/BootstrapCpp/**'
+      - 'Noodle/Compiler/**'
+      - 'Noodle/Runtime/**'
+      - 'Noodle/Examples/**'
+      - '.github/workflows/noodle-bootstrap.yml'
+  workflow_dispatch:
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S Noodle/BootstrapCpp -B build/noodle -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build/noodle --parallel 2
+      - name: Unit tests
+        run: ctest --test-dir build/noodle --output-on-failure
+      - name: Run Noodle example
+        run: build/noodle/noodle run Noodle/Examples/hello.nudl
+      - name: Check LifeEngine smoke program
+        run: build/noodle/noodle check Noodle/Examples/lifeengine-smoke.nudl
