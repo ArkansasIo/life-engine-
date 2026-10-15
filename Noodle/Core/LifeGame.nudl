@@ -1,0 +1,93 @@
+module LifeEngine.Noodle.Core.LifeGame {
+
+    struct LifeGame {
+        columns: i64,
+        rows: i64,
+        current: List<bool>,
+        history: List<bool>,
+        next: List<bool>,
+        start: List<bool>,
+        live_count: i64,
+        survive_rules: List<i64>,
+        birth_rules: List<i64>,
+        rules_text: string
+    }
+
+    fn create(columns: i64, rows: i64, rules: string) -> Result<LifeGame, string> {
+        if columns <= 0 || rows <= 0 {
+            return Err("Grid dimensions must be positive.")
+        }
+        let count: i64 = columns * rows
+        let game: LifeGame = LifeGame {
+            columns: columns, rows: rows,
+            current: List<bool>.filled(count as usize, false),
+            history: List<bool>.filled(count as usize, false),
+            next: List<bool>.filled(count as usize, false),
+            start: List<bool>.filled(count as usize, false),
+            live_count: 0,
+            survive_rules: [],
+            birth_rules: [],
+            rules_text: ""
+        }
+        return game.change_rules(rules)
+    }
+
+    fn index_of(game: LifeGame, x: i64, y: i64) -> i64 {
+        return x + y * game.columns
+    }
+
+    fn get_cell(game: LifeGame, x: i64, y: i64) -> bool {
+        if x < 0 || y < 0 || x >= game.columns || y >= game.rows {
+            return false
+        }
+        return game.current[index_of(game, x, y) as usize]
+    }
+
+    fn set_cell(game: LifeGame, x: i64, y: i64, alive: bool) -> Result<bool, string> {
+        if x < 0 || y < 0 || x >= game.columns || y >= game.rows {
+            return Err("Cell coordinates are outside the grid.")
+        }
+        let index: usize = index_of(game, x, y) as usize
+        let previous: bool = game.current[index]
+        if previous != alive {
+            if alive { game.live_count = game.live_count + 1 }
+            else { game.live_count = game.live_count - 1 }
+            game.current[index] = alive
+        }
+        return Ok(alive)
+    }
+
+    fn count_neighbors(game: LifeGame, x: i64, y: i64) -> i64 {
+        let count: i64 = 0
+        for dy in [-1, 0, 1] {
+            for dx in [-1, 0, 1] {
+                if dx == 0 && dy == 0 { continue }
+                if game.get_cell(x + dx, y + dy) { count = count + 1 }
+            }
+        }
+        return count
+    }
+
+    fn step(game: LifeGame) -> Result<i64, string> {
+        let live: i64 = 0
+        for y in 0..game.rows {
+            for x in 0..game.columns {
+                let neighbors: i64 = count_neighbors(game, x, y)
+                let index: usize = index_of(game, x, y) as usize
+                let alive: bool = game.current[index]
+                let survives: bool = game.survive_rules.contains(neighbors)
+                let born: bool = game.birth_rules.contains(neighbors)
+                game.next[index] = if alive { survives } else { born }
+                if game.next[index] { live = live + 1 }
+            }
+        }
+        game.history = game.current
+        game.current = game.next
+        game.next = List<bool>.filled((game.columns * game.rows) as usize, false)
+        game.live_count = live
+        return Ok(live)
+    }
+
+    // NUDL API adapters for List, Result, and mutable structs must be checked
+    // against the installed compiler/runtime before this module can execute.
+}
