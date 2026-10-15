@@ -1,0 +1,10 @@
+module LifeEngine.Noodle.Configuration.ConfigDefaults {
+ struct SimulationDefaults { grid_columns: i64, grid_rows: i64, rules: string, update_interval_ms: i64, initial_alive_probability: f64, random_seed: u64 }
+ fn simulation() -> SimulationDefaults { return SimulationDefaults { grid_columns: 100, grid_rows: 100, rules: "23/3", update_interval_ms: 100, initial_alive_probability: 0.25, random_seed: 1 } }
+ fn validate(settings: SimulationDefaults) -> Result<SimulationDefaults, string> {
+  if settings.grid_columns <= 0 || settings.grid_rows <= 0 { return Err("Grid dimensions must be positive.") }
+  if settings.update_interval_ms < 1 { return Err("Update interval must be at least one millisecond.") }
+  if settings.initial_alive_probability < 0.0 || settings.initial_alive_probability > 1.0 { return Err("Initial population probability must be in [0, 1].") }
+  return Ok(settings)
+ }
+}
