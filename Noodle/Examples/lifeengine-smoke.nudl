@@ -1,0 +1,8 @@
+fn main() -> i64 {
+    let rows: i64 = 10;
+    let columns: i64 = 10;
+    let cells: i64 = rows * columns;
+    print("LifeEngine Noodle smoke test");
+    print(cells);
+    return 0;
+}
