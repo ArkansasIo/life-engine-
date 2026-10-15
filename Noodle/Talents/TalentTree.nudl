@@ -1,0 +1,15 @@
+module LifeEngine.Noodle.Talents.TalentTree {
+ struct Talent { id: string, name: string, cost: i64, prerequisites: List<string>, description: string }
+ struct TalentTree { talents: List<Talent>, points_available: i64, unlocked_ids: List<string> }
+ fn can_unlock(tree: TalentTree, talent_id: string) -> bool {
+  if tree.unlocked_ids.contains(talent_id) { return false }
+  for talent in tree.talents {
+   if talent.id == talent_id {
+    if tree.points_available < talent.cost { return false }
+    for required in talent.prerequisites { if !tree.unlocked_ids.contains(required) { return false } }
+    return true
+   }
+  }
+  return false
+ }
+}
