@@ -1,0 +1,11 @@
+module LifeEngine.Noodle.Combat.CombatEngine {
+ struct AttackResult { attacker_id: string, defender_id: string, damage: f64, defender_health_after: f64, defender_alive_after: bool }
+ fn resolve_attack(attacker: Combatant, defender: Combatant, multiplier: f64) -> Result<AttackResult, string> {
+  if !attacker.alive { return Err("A defeated combatant cannot attack.") }
+  if !defender.alive { return Err("A defeated combatant cannot be targeted.") }
+  if multiplier < 0.0 || multiplier.is_nan() { return Err("Attack multiplier must be finite and non-negative.") }
+  let damage: f64 = max(0.0, attacker.attack * multiplier - defender.defense)
+  let remaining: f64 = max(0.0, defender.health - damage)
+  return Ok(AttackResult { attacker_id: attacker.id, defender_id: defender.id, damage: damage, defender_health_after: remaining, defender_alive_after: remaining > 0.0 })
+ }
+}
