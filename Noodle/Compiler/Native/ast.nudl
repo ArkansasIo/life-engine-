@@ -1,0 +1,29 @@
+module compiler.ast;
+
+schema Expression {
+    kind: string required;
+    value: string;
+    children: array;
+    line: integer required;
+    column: integer required;
+}
+
+schema Statement {
+    kind: string required;
+    name: string;
+    expression: Expression;
+    body: array;
+    alternate: array;
+}
+
+schema Function {
+    name: string required;
+    parameters: array;
+    return_type: string required;
+    body: array;
+}
+
+schema Program {
+    functions: array;
+    statements: array;
+}
