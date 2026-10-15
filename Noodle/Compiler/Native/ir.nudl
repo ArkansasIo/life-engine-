@@ -1,0 +1,17 @@
+module compiler.ir;
+
+schema Instruction {
+    opcode: string required;
+    operands: array;
+    result: string;
+    source_line: integer required;
+}
+
+schema ModuleIR {
+    instructions: array;
+    entry_point: string required;
+}
+
+fn lower(program: Program) -> ModuleIR {
+    return ModuleIR { instructions: [], entry_point: "main" };
+}
