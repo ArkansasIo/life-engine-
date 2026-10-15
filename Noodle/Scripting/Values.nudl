@@ -1,0 +1,17 @@
+module LifeEngine.Noodle.Scripting.Values {
+ enum ValueKind { Null, Boolean, Number, String, List, Object }
+ struct RuntimeValue { kind: ValueKind, boolean_value: bool, number_value: f64, string_value: string }
+ fn number(value: f64) -> RuntimeValue { return RuntimeValue { kind: ValueKind.Number, boolean_value: false, number_value: value, string_value: "" } }
+ fn boolean(value: bool) -> RuntimeValue { return RuntimeValue { kind: ValueKind.Boolean, boolean_value: value, number_value: 0.0, string_value: "" } }
+ fn string(value: string) -> RuntimeValue { return RuntimeValue { kind: ValueKind.String, boolean_value: false, number_value: 0.0, string_value: value } }
+ fn truthy(value: RuntimeValue) -> bool {
+  match value.kind {
+   ValueKind.Null => return false,
+   ValueKind.Boolean => return value.boolean_value,
+   ValueKind.Number => return value.number_value != 0.0 && !value.number_value.is_nan(),
+   ValueKind.String => return value.string_value.length() > 0,
+   ValueKind.List => return true,
+   ValueKind.Object => return true
+  }
+ }
+}
