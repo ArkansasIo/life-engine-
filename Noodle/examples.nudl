@@ -1,0 +1,18 @@
+module LifeEngine.Noodle.Examples {
+    fn main() -> i32 {
+        let systems: List<OrganSystemInfo> = human_organ_systems()
+        print("Human organ systems indexed: " + systems.length().to_string())
+
+        let engine: MutationEngine = MutationEngine.new(20261015)
+        let sample: Result<MutationResult, string> = engine.apply_one("ACGTACGT", SequenceKind.DNA, MutationKind.Substitution)
+        match sample {
+            Ok(result) => {
+                print("Original synthetic sequence: " + result.original_sequence)
+                print("Mutated synthetic sequence: " + result.mutated_sequence)
+                print("Event: " + result.mutation.to_string())
+            }
+            Err(message) => print("Mutation simulation error: " + message)
+        }
+        return 0
+    }
+}
