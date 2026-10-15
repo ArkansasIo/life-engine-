@@ -1,0 +1,13 @@
+module LifeEngine.Noodle.Ai.Difficulty {
+ enum DifficultyLevel { Story, Easy, Normal, Hard, Nightmare }
+ struct DifficultyProfile { level: DifficultyLevel, health_multiplier: f64, damage_multiplier: f64, resource_multiplier: f64, decision_interval_seconds: f64 }
+ fn defaults(level: DifficultyLevel) -> DifficultyProfile {
+  match level {
+   DifficultyLevel.Story => return DifficultyProfile { level: level, health_multiplier: 0.7, damage_multiplier: 0.6, resource_multiplier: 1.4, decision_interval_seconds: 1.5 },
+   DifficultyLevel.Easy => return DifficultyProfile { level: level, health_multiplier: 0.85, damage_multiplier: 0.8, resource_multiplier: 1.2, decision_interval_seconds: 1.0 },
+   DifficultyLevel.Normal => return DifficultyProfile { level: level, health_multiplier: 1.0, damage_multiplier: 1.0, resource_multiplier: 1.0, decision_interval_seconds: 0.75 },
+   DifficultyLevel.Hard => return DifficultyProfile { level: level, health_multiplier: 1.25, damage_multiplier: 1.25, resource_multiplier: 0.9, decision_interval_seconds: 0.5 },
+   DifficultyLevel.Nightmare => return DifficultyProfile { level: level, health_multiplier: 1.6, damage_multiplier: 1.7, resource_multiplier: 0.8, decision_interval_seconds: 0.25 }
+  }
+ }
+}
