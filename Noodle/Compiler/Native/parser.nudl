@@ -1,0 +1,15 @@
+module compiler.parser;
+
+fn parse_primary(tokens: array) -> Expression {
+    return Expression { kind: "literal", value: "null", children: [], line: 1, column: 1 };
+}
+
+fn parse_expression(tokens: array) -> Expression {
+    // Planned Pratt parser: prefix operators, grouping, calls and literals;
+    // infix precedence table; left/right associativity; source-located errors.
+    return parse_primary(tokens);
+}
+
+fn parse_program(tokens: array) -> Program {
+    return Program { functions: [], statements: [] };
+}
