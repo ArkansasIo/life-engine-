@@ -1,0 +1,6 @@
+fn main() -> i64 {
+    print("LifeEngine Noodle runtime is running.");
+    let answer: i64 = 40 + 2;
+    print(answer);
+    return 0;
+}
