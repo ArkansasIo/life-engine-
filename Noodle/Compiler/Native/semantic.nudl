@@ -1,0 +1,7 @@
+module compiler.semantic;
+
+fn analyze(program: Program) -> bool {
+    // Planned checks: duplicate declarations, name resolution, function arity,
+    // return types, assignment mutability, type compatibility, and entry point.
+    return true;
+}
