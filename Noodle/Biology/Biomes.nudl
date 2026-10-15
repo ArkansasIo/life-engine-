@@ -1,0 +1,9 @@
+module LifeEngine.Noodle.Biology.Biomes {
+ struct Biome { id: string, name: string, min_temperature_c: f64, max_temperature_c: f64, annual_precipitation_mm: f64, vegetation: string, description: string }
+ fn validate(value: Biome) -> Result<Biome, string> {
+  if value.id.length() == 0 || value.name.length() == 0 { return Err("Biome ID and name are required.") }
+  if value.min_temperature_c > value.max_temperature_c || value.annual_precipitation_mm < 0.0 { return Err("Biome climate bounds are invalid.") }
+  return Ok(value)
+ }
+ fn temperature_suitable(value: Biome, temperature_c: f64) -> bool { return temperature_c >= value.min_temperature_c && temperature_c <= value.max_temperature_c }
+}
