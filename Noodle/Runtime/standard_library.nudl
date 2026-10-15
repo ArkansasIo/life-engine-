@@ -1,0 +1,12 @@
+module runtime.standard_library;
+
+fn print_text(value: string) -> bool {
+    // Output is provided by the runtime host; this function is an interface
+    // contract until the host I/O primitive is wired into the Noodle runtime.
+    return true;
+}
+
+fn absolute(value: number) -> number {
+    if (value < 0) { return 0 - value; }
+    return value;
+}
