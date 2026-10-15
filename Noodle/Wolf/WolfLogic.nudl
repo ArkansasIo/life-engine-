@@ -1,0 +1,13 @@
+module LifeEngine.Noodle.Wolf.WolfLogic {
+ enum WolfAction { Rest, Forage, Hunt, Flee, Defend, FollowPack }
+ struct WolfState { energy: f64, hunger: f64, health: f64, threat: f64, pack_distance: f64 }
+ fn choose_action(wolf: WolfState) -> WolfAction {
+  if wolf.health < 0.25 || wolf.threat > 0.8 { return WolfAction.Flee }
+  if wolf.energy < 0.15 { return WolfAction.Rest }
+  if wolf.pack_distance > 10.0 { return WolfAction.FollowPack }
+  if wolf.hunger > 0.65 && wolf.threat < 0.5 { return WolfAction.Hunt }
+  if wolf.hunger > 0.35 { return WolfAction.Forage }
+  if wolf.threat > 0.45 { return WolfAction.Defend }
+  return WolfAction.Rest
+ }
+}
