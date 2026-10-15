@@ -1,0 +1,17 @@
+module LifeEngine.Noodle.Data.Database {
+ enum DatabaseKind { Access, Sqlite, MySql, Memory, Unknown }
+ struct DatabaseStatus { kind: DatabaseKind, description: string, available: bool, problem: string }
+ trait DatabaseProvider {
+  fn description(self) -> string
+  fn is_available(self) -> bool
+  fn open_connection(self) -> Result<DatabaseConnection, string>
+ }
+ trait DatabaseConnection {
+  fn execute(self, statement: string, parameters: List<RuntimeValue>) -> Result<i64, string>
+  fn query(self, statement: string, parameters: List<RuntimeValue>) -> Result<List<DatabaseRow>, string>
+  fn close(self) -> Result<bool, string>
+ }
+ struct DatabaseRow { columns: List<string>, values: List<RuntimeValue> }
+ // Host interface only. Actual Access/OLE DB, SQL schema migration, transactions,
+ // and provider-specific behavior must be ported and bound to a Noodle runtime.
+}
