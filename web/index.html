@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b22">
+  <meta name="description" content="LifeEngine — a browser-based cellular automata and biosphere laboratory.">
+  <title>LifeEngine | Biosphere Laboratory</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="LifeEngine home"><span class="brand-mark">LE</span><span><strong>LifeEngine</strong><small>BIOSPHERE LABORATORY</small></span></a>
+      <div class="top-meta"><span class="live-dot"></span><span id="run-status">SIMULATION PAUSED</span><span class="divider"></span><span id="generation">GEN 000000</span></div>
+    </header>
+    <main>
+      <section class="hero">
+        <div><p class="eyebrow">CELLULAR AUTOMATA · ECOLOGY · EMERGENT SYSTEMS</p><h1>Study the patterns<br><em>that become life.</em></h1><p class="intro">A self-contained browser laboratory for exploring cellular rules, ecosystem balance, and the emergence of living systems.</p></div>
+        <div class="hero-stats"><div><span class="stat-label">GRID CELLS</span><strong id="cell-count">1,200</strong></div><div><span class="stat-label">LIVING CELLS</span><strong id="alive-count">0</strong></div><div><span class="stat-label">BIOME RECORDS</span><strong id="biome-count">5</strong></div></div>
+      </section>
+      <div class="workspace">
+        <aside class="panel controls">
+          <div class="panel-heading"><span class="section-index">01</span><h2>Experiment controls</h2></div>
+          <label for="ruleset">Rule profile</label>
+          <select id="ruleset"><option value="life">Conway's Life · B3/S23</option><option value="highlife">HighLife · B36/S23</option><option value="seeds">Seeds · B2/S</option><option value="daynight">Day & Night · B3678/S34678</option></select>
+          <label for="speed">Simulation speed <output id="speed-value">8 steps/s</output></label>
+          <input id="speed" type="range" min="1" max="20" value="8">
+          <div class="button-row"><button id="start" class="primary">▶ Run</button><button id="step">Step →</button></div>
+          <div class="button-row"><button id="randomize">Random seed</button><button id="clear">Clear grid</button></div>
+          <div class="rule-note"><span class="rule-symbol">⌘</span><p><strong>How to interact</strong><br>Click any cell to toggle it. Use Step to advance one generation or Run to watch patterns evolve.</p></div>
+          <div class="panel-heading secondary-heading"><span class="section-index">02</span><h2>World snapshot</h2></div>
+          <div id="world-status" class="world-status"><span class="spinner"></span> Loading biosphere data…</div>
+          <div id="biome-list" class="biome-list"></div>
+          <button id="refresh-data" class="text-button">↻ Refresh biosphere data</button>
+        </aside>
+        <section class="panel simulation-panel">
+          <div class="panel-heading canvas-heading"><div><span class="section-index">03</span><h2>Cellular field</h2></div><span class="badge">LIVE CANVAS</span></div>
+          <div class="canvas-wrap"><canvas id="life-grid" width="900" height="600" aria-label="Cellular automata grid; click cells to toggle"></canvas></div>
+          <div class="canvas-legend"><span><i class="legend-dot alive"></i>Living cell</span><span><i class="legend-dot dead"></i>Empty cell</span><span class="legend-hint">CLICK GRID TO EDIT</span></div>
+          <div class="chart-strip"><div><span class="stat-label">POPULATION</span><strong id="population-percent">0.0%</strong></div><div><span class="stat-label">LAST CHANGE</span><strong id="last-change">—</strong></div><div><span class="stat-label">RULE ENGINE</span><strong id="rule-label">B3 / S23</strong></div></div>
+        </section>
+      </div>
+      <section class="lower-grid">
+        <article class="panel info-panel"><p class="eyebrow">FIELD NOTES / 001</p><h2>Complexity from simple rules.</h2><p>LifeEngine lets you inspect emergent behavior: local cell interactions can produce stable structures, oscillators, and expanding patterns. The browser build is designed as a static client, so the simulation runs locally on your device.</p></article>
+        <article class="panel info-panel"><p class="eyebrow">BIOLOGY MODULE</p><h2>From cells to ecosystems.</h2><p>The biosphere panel reads a JSON data source with biome and organism records. It is a starter integration point for richer taxonomy, climate, habitat, genome, and organism models from the desktop project.</p><div class="data-status"><span class="live-dot"></span><span id="data-source-status">DATA SOURCE: PENDING</span></div></article>
+      </section>
+    </main>
+    <footer><span>LifeEngine · ArkansasIo</span><span>STATIC WEB EDITION <b>v2.0.0</b></span><span>HTML · CSS · TYPESCRIPT · FETCH/AJAX</span></footer>
+  </div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
