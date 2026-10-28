@@ -1,0 +1,12 @@
+{
+  "name": "lifeengine-web",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Static browser laboratory for LifeEngine cellular automata and biosphere data",
+  "scripts": {
+    "build:web": "tsc -p web/tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
