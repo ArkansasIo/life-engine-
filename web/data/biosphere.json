@@ -1,0 +1,97 @@
+{
+  "version": "2.0.0",
+  "source": "LifeEngine web biosphere seed dataset",
+  "biomes": [
+    {
+      "id": "rainforest",
+      "name": "Tropical rainforest",
+      "organisms": 5,
+      "status": "Stable",
+      "color": "#73c9a3"
+    },
+    {
+      "id": "desert",
+      "name": "Arid desert",
+      "organisms": 3,
+      "status": "Dry",
+      "color": "#d7b779"
+    },
+    {
+      "id": "tundra",
+      "name": "Arctic tundra",
+      "organisms": 3,
+      "status": "Cold",
+      "color": "#91cbd7"
+    },
+    {
+      "id": "ocean",
+      "name": "Open ocean",
+      "organisms": 4,
+      "status": "Stable",
+      "color": "#76aee5"
+    },
+    {
+      "id": "freshwater",
+      "name": "Freshwater lake",
+      "organisms": 3,
+      "status": "Balanced",
+      "color": "#8fc7bb"
+    }
+  ],
+  "organisms": [
+    {
+      "id": "fern-01",
+      "name": "Canopy fern",
+      "biome": "rainforest",
+      "role": "producer"
+    },
+    {
+      "id": "beetle-01",
+      "name": "Bark beetle",
+      "biome": "rainforest",
+      "role": "consumer"
+    },
+    {
+      "id": "cactus-01",
+      "name": "Dune cactus",
+      "biome": "desert",
+      "role": "producer"
+    },
+    {
+      "id": "fox-01",
+      "name": "Fennec fox",
+      "biome": "desert",
+      "role": "consumer"
+    },
+    {
+      "id": "moss-01",
+      "name": "Tundra moss",
+      "biome": "tundra",
+      "role": "producer"
+    },
+    {
+      "id": "lichen-01",
+      "name": "Stone lichen",
+      "biome": "tundra",
+      "role": "producer"
+    },
+    {
+      "id": "kelp-01",
+      "name": "Coastal kelp",
+      "biome": "ocean",
+      "role": "producer"
+    },
+    {
+      "id": "ray-01",
+      "name": "Reef ray",
+      "biome": "ocean",
+      "role": "consumer"
+    },
+    {
+      "id": "reed-01",
+      "name": "Lake reed",
+      "biome": "freshwater",
+      "role": "producer"
+    }
+  ]
+}
