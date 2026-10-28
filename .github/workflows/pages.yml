@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+name: Deploy LifeEngine Web Edition
 
 on:
   push:
@@ -20,12 +20,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install TypeScript build dependency
+        run: npm install
+      - name: Type-check and build TypeScript source
+        run: npm run build:web
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Upload Pages artifact
+      - name: Upload static web edition
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs
+          path: ./web
 
   deploy:
     environment:
